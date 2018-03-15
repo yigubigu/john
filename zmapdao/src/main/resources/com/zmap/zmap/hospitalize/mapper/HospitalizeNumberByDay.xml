@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.hospitalize.mapper.HospitalizeNumberMapper">
+  <resultMap type="com.zmap.zmap.hospitalize.model.HospitalizeNumberModel" id="hospitalizeNumberByDayMap">  
+    <result column="sickman_code"  property="sickmanCode" />  
+    <result column="in_date"  property="inDate" />
+    <result column="out_date"  property="outDate" />
+    <result column="sick_bed_code" property="sickBedCode"/>
+    <result column="hospital_code" property="hospitalCode"/>
+    <result column="resp_dept" property="respDept"/>
+    <result column="resp_doctor_code" property="respDoctorCode"/>
+    <result column="dept_name" property="deptName"/>
+    <result column="hospitalize_num" property="hospitalizeNum"/>
+    <result column="doctor_name" property="doctorName"/>
+    <result column="dept_code" property="deptCode"/>
+  </resultMap>
+
+  <select id="selectHospitalizeNumByDept" parameterType="java.util.Map" resultMap="hospitalizeNumberByDayMap">
+  	select d.dept_code,d.dept_name,count(h.sickman_code) as hospitalizeNum 
+  	from zmap_h_m1_hospitalize h,zmap_r_dept d
+	where h.resp_dept = d.dept_code
+	and h.hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+	and h.hospital_code = d.hospital_code 
+	and h.sick_bed_code is not NULL
+	and h.in_date between #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR} GROUP BY d.dept_code
+  </select>
+  
+  <select id="selectHospitalizeNumByDoctor" parameterType="java.util.Map" resultMap="hospitalizeNumberByDayMap">
+  	select h.resp_dept as deptCode, e.dept_name as deptName, h.resp_doctor_code as doctorCode, d.doctor_name as doctorName, count(h.sickman_code) as hospitalizeNum
+	from zmap_h_m1_hospitalize h,zmap_r_dept e,zmap_r_doctor d
+	where h.hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+	and h.hospital_code = e.hospital_code
+	and h.hospital_code = d.hospital_code
+	and h.resp_dept = e.dept_code
+	and e.dept_code =#{deptcode,jdbcType=VARCHAR}
+	and h.resp_doctor_code = d.doctor_code
+	and h.sick_bed_code is not NULL
+	and h.in_date between #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+	GROUP BY h.resp_doctor_code
+  </select>
+  
+  <select id="selectDayHospitalizeNumberSum" parameterType="java.util.Map" resultMap="hospitalizeNumberByDayMap">
+  	select count(sickman_code) as hospitalizeNum from zmap_h_m1_hospitalize h where h.sick_bed_code is not NULL
+  	and h.hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+  	and h.in_date LIKE '${curDate}%'
+  </select>
+  
+</mapper>
+  

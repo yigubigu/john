@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.clinic.mapper.ServiceNumberMapper">
+  <resultMap type="HashMap" id="serviceNumSumMap">  
+    <result column="service_count"  property="serviceCount" />
+    <result column="patient_code" property="patientCode"/>
+    <result column="sickman_code"  property="sickmanCode" />
+    <result column="hospital_code"  property="hospitalCode" /> 
+    <result column="reg_time"  property="regTime" />
+     <result column="in_date"  property="inDate" />
+  </resultMap>
+  
+  <resultMap type="HashMap" id="deptServiceNumMap">  
+    <result column="dept_code"  property="deptCode" />  
+     <result column="service_count"  property="serviceCount" />
+     <result column="patient_code" property="patientCode"/>
+     <result column="resp_dept"  property="respDept" />
+    <result column="sickman_code"  property="sickmanCode" /> 
+    <result column="hospital_code"  property="hospitalCode" />
+  </resultMap>
+  
+  <resultMap type="com.zmap.zmap.clinic.model.ServiceNumberModel" id="doctorServiceNumMap">  
+    <result column="doctor_code"  property="doctorCode" />  
+     <result column="service_count"  property="serviceCount" />
+     <result column="patient_code" property="patientCode"/>
+     <result column="sickman_code"  property="sickmanCode" />
+	<result column="resp_doctor_code" property="respDoctorCode"/>
+	<result column="hospital_code"  property="hospitalCode" />
+  </resultMap>  
+     
+  <select id="selectMonthServiceNumberSum" parameterType="java.util.Map" resultMap="serviceNumSumMap">
+  	select COUNT(DISTINCT patient_code) as serviceCount from zmap_c_m1_clinics
+	where reg_time LIKE '${curDate}%' and hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+	and patient_code not in (select DISTINCT sickman_code from zmap_h_m1_hospitalize
+	where in_date LIKE '${curDate}%' and  hospital_code = #{hospitalCode,jdbcType=VARCHAR})
+  	
+  </select>
+  
+  <select id="selectMonthServiceNumberSumByCategory" parameterType="java.util.Map" resultMap="serviceNumSumMap">
+  	select COUNT(DISTINCT patient_code) as serviceCount from zmap_c_m1_clinics where reg_time like '${curDate}%' and hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+  		UNION ALL
+  	select COUNT(DISTINCT sickman_code) as serviceCount from zmap_h_m1_hospitalize where in_date like '${curDate}%' and hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+  </select>
+    
+  <select id="selectMonthServiceNumberByDept" parameterType="java.util.Map" resultMap="deptServiceNumMap">
+  	select dept_code as deptCode,COUNT(DISTINCT patient_code) as serviceCount 
+	from zmap_c_m1_clinics where reg_time like '${curDate}%' and hospital_code=#{hospitalCode,jdbcType=VARCHAR} group by deptCode
+		UNION all
+	select resp_dept as deptCode,COUNT(DISTINCT sickman_code) as serviceCount 
+	from zmap_h_m1_hospitalize 
+	where in_date like '${curDate}%' and hospital_code=#{hospitalCode,jdbcType=VARCHAR} group by deptCode
+  </select>
+ 
+ 
+   <select id="selectMonthServiceNumberByDoctor" parameterType="java.util.Map" resultMap="doctorServiceNumMap">
+   	select doctor_code as doctorCode, COUNT(DISTINCT patient_code) as serviceCount 
+	from zmap_c_m1_clinics where reg_time like '${curDate}%' and dept_code=#{deptCode,jdbcType=VARCHAR} and  hospital_code=#{hospitalCode,jdbcType=VARCHAR} GROUP BY doctorCode
+		UNION all
+	select resp_doctor_code as doctorCode, COUNT(DISTINCT sickman_code) as serviceCount 
+	from zmap_h_m1_hospitalize where in_date like '${curDate}%' and resp_dept=#{deptCode,jdbcType=VARCHAR} and hospital_code=#{hospitalCode,jdbcType=VARCHAR} GROUP BY doctorCode
+  </select>
+</mapper>

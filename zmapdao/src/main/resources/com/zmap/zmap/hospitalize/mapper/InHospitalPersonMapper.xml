@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.hospitalize.mapper.InHospitalPersonMapper">
+ <resultMap type="com.zmap.zmap.hospitalize.model.InHospitalPersonModel" id="InHospitalPersonMap">
+    <result column="dept_code" property="deptCode"/>
+    <result column="dept_name" property="deptName"/>
+    <result column="doctor_code" property="doctorCode"/>
+    <result column="doctor_name" property="doctorName"/>
+    <result column="inPeopleDoctor_count" property="inPeopleDoctorCount"/>
+    <result column="hospital_code" property="hospitalCode"/>
+    <result column="in_date" property="inDate"/>
+    <result column="sickman_code" property="sickmanCode"/>
+    <result column="inPeople_count" property="inPeopleCount"/>
+ </resultMap>
+
+
+<select id="selectInHospitalPersonByDateSum" parameterType="java.util.Map" resultMap="InHospitalPersonMap">
+SELECT
+ COUNT(h.sickman_code) AS inPeopleCount
+FROM
+ zmap_h_m1_hospitalize h
+WHERE
+ h.hospital_code = #{hospitalCode,jdbcType = VARCHAR}
+AND
+ h.in_date LIKE '${curDate}%'
+AND
+ (h.out_date is Null OR h.out_date LIKE '${curDate}%');
+
+</select>
+
+<select id="selectInHospitalPersonByDept" parameterType="java.util.Map" resultMap="InHospitalPersonMap">
+SELECT 
+ d1.dept_name,COUNT(h.sickman_code) AS inPeopleCount,d1.dept_code
+FROM 
+ zmap_h_m1_hospitalize h,
+ zmap_r_dept d1,
+ zmap_r_doctor d2
+WHERE
+ h.hospital_code = d1.hospital_code
+AND
+ d1.hospital_code = d2.hospital_code
+AND
+ d1.hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+AND
+ h.in_date LIKE '${curDate}%'
+AND
+ (h.out_date is Null OR h.out_date LIKE '${curDate}%')
+AND
+ h.rec_doctor_code = d2.doctor_code
+AND
+ d1.dept_code = d2.dept_code
+GROUP BY
+ d1.dept_code;    
+</select>
+
+<select id="selectInHospitalPersonByDoctor" parameterType="java.util.Map" resultMap="InHospitalPersonMap">
+SELECT
+ d1.dept_code,d1.dept_name,d2.doctor_code AS doctorCode,d2.doctor_name,COUNT(h.sickman_code) AS inPeopleDoctorCount
+FROM
+ zmap_h_m1_hospitalize h,
+ zmap_r_dept d1,
+ zmap_r_doctor d2
+WHERE
+ h.hospital_code = d1.hospital_code
+AND
+ d1.hospital_code = d2.hospital_code
+AND
+ h.hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+AND
+ h.in_date LIKE '${curDate}%'
+AND
+ (h.out_date is Null OR h.out_date LIKE '${curDate}%')
+AND
+ h.rec_doctor_code = d2.doctor_code
+AND
+ d1.dept_code = d2.dept_code
+AND
+ d1.dept_code = #{deptCode,jdbcType=VARCHAR}
+GROUP BY
+ d2.doctor_code;
+</select>
+</mapper>

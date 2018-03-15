@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.hospitalize.mapper.OutHospitalPersonMapper">
+  <resultMap type="com.zmap.zmap.hospitalize.model.OutHospitalPersonModel" id="outHospitalPersonMap">
+    <result column="dept_code" property="deptCode"/>
+    <result column="dept_name" property="deptName"/>
+    <result column="hospital_code" property="hospitalCode"/>
+    <result column="resp_dept" property="respDept"/>
+    <result column="out_date" property="outDate"/> 
+    <result column="outPeople_count" property="outPeopleCount"/>  
+  </resultMap>
+  
+  <select id="selectOutHospitalPersonByDate" parameterType="java.util.Map" resultMap="outHospitalPersonMap">
+      SELECT 
+         count(sickman_code) as outPeopleCount 
+      FROM
+         zmap_h_m1_hospitalize h
+      WHERE
+         h.out_date LIKE '${curDate}%' 
+      AND
+         h.hospital_code = #{hospitalCode,jdbcType=VARCHAR};
+  
+  </select>
+  
+  <select id="selectOutHospitalPersonByDept" parameterType="java.util.Map" resultMap="outHospitalPersonMap">
+      SELECT 
+         d.dept_name,COUNT(sickman_code) as outPeopleCount,h.resp_dept as respDept
+      FROM
+         zmap_h_m1_hospitalize h,
+         zmap_r_dept d
+      WHERE
+         h.hospital_code = d.hospital_code
+      AND
+         d.hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+      AND
+         h.out_date LIKE '${curDate}%'   
+      AND
+         h.resp_dept = d.dept_code
+      GROUP BY
+         respDept;
+  </select>
+  
+  <select id="selectOutHospitalPersonByDateSum" parameterType="java.util.Map" resultMap="outHospitalPersonMap">
+      SELECT 
+        COUNT(sickmanCode) as outPeopleCount
+      FROM
+        zmap_h_m1_hospitalize h
+      WHERE
+        h.hospital_code = 1
+      AND
+        h.out_date LIKE '${curDate}%';
+  </select>
+
+
+</mapper>

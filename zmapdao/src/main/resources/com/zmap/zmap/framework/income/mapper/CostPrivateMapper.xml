@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.framework.income.mapper.CostPrivateMapper">
+  <resultMap type="HashMap" id="feeCountMap">  
+    <result column="fee_count"  property="feeCount" />  
+    <result column="fee_name"  property="feeName" />
+     <result column="fee_code"  property="feeCode" />
+  </resultMap>
+  
+  <resultMap type="com.zmap.zmap.framework.income.model.CostPrivateModel" id="deptPrivateIncomeMap">  
+    <result column="dept_code"  property="deptCode" />  
+     <result column="fee_count"  property="feeCount" />
+  </resultMap>
+  
+  <resultMap type="com.zmap.zmap.framework.income.model.CostPrivateModel" id="doctorPrivateIncomeMap">  
+    <result column="doctor_code"  property="doctorCode" />  
+     <result column="fee_count"  property="feeCount" />
+  </resultMap>  
+  
+  
+  <resultMap type="HashMap" id="PrivateSumMap">  
+     <result column="fee_count"  property="feeCount" />
+  </resultMap>   
+    <select id="selectDaySumIncomeByPrivate" parameterType="java.util.Map" resultMap="PrivateSumMap">
+	   select sum(amount) as feeCount from zmap_c_m2_charge where is_insure_settle=0 and charge_time like '${curDate}%' and hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+		UNION all
+		select sum(amount) as feeCount from zmap_h_m2_charge where is_insure_settle=0 and settle_charge_time like '${curDate}%' and hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+ 	 </select>
+  
+
+  
+  <select id="selectDayPrivateIncomeByDept" parameterType="java.util.Map" resultMap="deptPrivateIncomeMap">
+    select dept_code as deptCode, sum(amount) as feeCount from zmap_c_m2_charge where is_insure_settle=0 and  hospital_code=#{hospitalCode,jdbcType=VARCHAR} and  charge_time like '${curDate}%'  group by dept_code
+		UNION all
+	select dept_code as deptCode, sum(amount) as feeCount from zmap_h_m2_charge where is_insure_settle=0 and  hospital_code=#{hospitalCode,jdbcType=VARCHAR} and  settle_charge_time like '${curDate}%'  group by dept_code
+  </select>
+ 
+ 
+   <select id="selectDayPrivateIncomeByDoctor" parameterType="java.util.Map" resultMap="doctorPrivateIncomeMap">
+
+  select doctor_code as doctorCode, sum(amount) as feeCount from zmap_c_m2_charge where is_insure_settle=0 and charge_time like '${curDate}%'  and dept_code=#{deptCode,jdbcType=VARCHAR} and  hospital_code=#{hospitalCode,jdbcType=VARCHAR}  GROUP BY doctor_code
+		UNION all
+	select doctor_code as doctorCode, sum(amount) as feeCount from zmap_h_m2_charge where is_insure_settle=0 and settle_charge_time like '${curDate}%' and   dept_code=#{deptCode,jdbcType=VARCHAR} and hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+     GROUP BY doctor_code
+  </select>
+</mapper>

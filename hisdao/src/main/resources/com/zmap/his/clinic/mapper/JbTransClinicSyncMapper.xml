@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.his.clinic.mapper.JbTransClinicSyncMapper">
+	<resultMap id="baseMap" type="com.zmap.his.clinic.model.JbTransClinicSyncModel">
+		<result column="reg_seq" property="regSeq" />
+		<result column="apply_dept_code" property="applyDeptCode" />
+		<result column="apply_doctor_code" property="applyDoctorCode" />
+		<result column="rec_dept_code"  property="recDeptCode" />
+		<result column="rec_doctor_code" property="recDoctorCode" />
+		<result column="rec_time" property="recTime" />
+		<result column="reg_code" property="regCode" />
+	</resultMap>
+	<select id="selectTop1"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.No as reg_seq,
+				a.申请科室id as apply_dept_code,
+				(select b.ID from 人员表 b where b.姓名 =  a.申请医生) as apply_doctor_code,
+				a.接收科室ID as rec_dept_code,
+				(select c.ID from 人员表 c where c.姓名 =  a.接收医生) as rec_doctor_code,
+				a.接收时间 as rec_time,
+				a.挂号ID as reg_code
+			from 病人转诊记录 a
+		   ) t where rownum <=1
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectTop50"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.No as reg_seq,
+				a.申请科室id as apply_dept_code,
+				(select b.ID from 人员表 b where b.姓名 =  a.申请医生) as apply_doctor_code,
+				a.接收科室ID as rec_dept_code,
+				(select c.ID from 人员表 c where c.姓名 =  a.接收医生) as rec_doctor_code,
+				a.接收时间 as rec_time,
+				a.挂号ID as reg_code
+			from 病人转诊记录 a
+		   ) t where rownum <=50
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectAllRecord"  resultMap="baseMap">
+		<![CDATA[
+		    select 
+				a.No as reg_seq,
+				a.申请科室id as apply_dept_code,
+				(select b.ID from 人员表 b where b.姓名 =  a.申请医生) as apply_doctor_code,
+				a.接收科室ID as rec_dept_code,
+				(select c.ID from 人员表 c where c.姓名 =  a.接收医生) as rec_doctor_code,
+				a.接收时间 as rec_time,
+				a.挂号ID as reg_code
+			from 病人转诊记录 a
+		]]>
+	</select>
+	<!-- 多个参数的形式，需要使用map来存储-->
+    <select id="selectByPagination" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        <![CDATA[
+        select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.No as reg_seq,
+				a.申请科室id as apply_dept_code,
+				(select b.ID from 人员表 b where b.姓名 =  a.申请医生) as apply_doctor_code,
+				a.接收科室ID as rec_dept_code,
+				(select c.ID from 人员表 c where c.姓名 =  a.接收医生) as rec_doctor_code,
+				a.接收时间 as rec_time,
+				a.挂号ID as reg_code
+			from 病人转诊记录 a
+		   ) t where rownum <= ${curPageRow}
+		 ) where rn > ${prePageRow}
+		 ]]>
+    </select>
+    <select id="selectByPaginationWithDateTime" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        	<![CDATA[
+        	select * from (
+			  select t.*,rownum rn from
+			  (
+			    select 
+					a.No as reg_seq,
+					a.申请科室id as apply_dept_code,
+					(select b.ID from 人员表 b where b.姓名 =  a.申请医生) as apply_doctor_code,
+					a.接收科室ID as rec_dept_code,
+					(select c.ID from 人员表 c where c.姓名 =  a.接收医生) as rec_doctor_code,
+					a.接收时间 as rec_time,
+					a.挂号ID as reg_code
+				from 病人转诊记录 a
+			    where to_char(a.接收时间,'yyyy-MM-dd') = #{curDate}
+			   ) t where rownum <= ${curPageRow}
+			 ) where rn > ${prePageRow}
+			 ]]>
+    </select>
+    <select id="countNum" resultType="int">
+        <![CDATA[
+        select count(*) from 病人转诊记录
+        ]]>
+    </select>
+    <select id="countNumWithDate" parameterType="String" resultType="int">
+    	<![CDATA[
+        select count(*) from 病人转诊记录  where to_char(接收时间,'yyyy-MM-dd') = #{curDate}
+        ]]>
+    </select>
+</mapper>

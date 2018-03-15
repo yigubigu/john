@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.his.basedata.mapper.LExamineMapper">
+	<resultMap id="baseMap" type="com.zmap.his.basedata.model.LExamineModel">
+	    <result column="exam_class_code" jdbcType="VARCHAR" property="examClassCode" />
+	    <result column="exam_class_name" jdbcType="VARCHAR" property="examClassName" />
+	    <result column="exam_type_code" jdbcType="VARCHAR" property="examTypeCode" />
+	    <result column="exam_type_name" jdbcType="VARCHAR" property="examTypeName" />
+	    <result column="exam_code" jdbcType="VARCHAR" property="examCode" />
+	    <result column="exam_name" jdbcType="VARCHAR" property="examName" />
+	    <result column="zmap_exam_code" jdbcType="VARCHAR" property="zmapExamCode" />
+	    <result column="zmap_exam_name" jdbcType="VARCHAR" property="zmapExamName" />
+	    <result column="unit_price" jdbcType="VARCHAR" property="unitPrice" />
+	    <result column="sub_hospital_code" jdbcType="VARCHAR" property="subHospitalCode" />
+	    <result column="hospital_code" jdbcType="VARCHAR" property="hospitalCode" />
+	</resultMap>
+	<select id="selectTop1"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as doctor_code,
+				(select b.部门ID from 部门人员 b where a.id=b.人员ID and b.缺省=1) as dept_code,
+				'' as zmap_dept_code,
+				'' as status,
+				a.姓名 as doctor_name,
+				a.性别 as sex,
+				a.身份证号 as id_card,
+				a.出生日期 as birthday,
+				'' as job_title_code,
+				a.专业技术职务 as job_title,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				'' as zmap_doctor_code,
+				'' as zmap_doctor_name,
+				'' as password
+			from 人员表 a
+		   ) t where rownum <=1
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectTop50"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as doctor_code,
+				(select b.部门ID from 部门人员 b where a.id=b.人员ID and b.缺省=1) as dept_code,
+				'' as zmap_dept_code,
+				'' as status,
+				a.姓名 as doctor_name,
+				a.性别 as sex,
+				a.身份证号 as id_card,
+				a.出生日期 as birthday,
+				'' as job_title_code,
+				a.专业技术职务 as job_title,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				'' as zmap_doctor_code,
+				'' as zmap_doctor_name,
+				'' as password
+			from 人员表 a
+		   ) t where rownum <=50
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectAllWithoutPagination"  resultMap="baseMap">
+		<![CDATA[
+		    select 
+				a.ID as doctor_code,
+				(select b.部门ID from 部门人员 b where a.id=b.人员ID and b.缺省=1) as dept_code,
+				'' as zmap_dept_code,
+				'' as status,
+				a.姓名 as doctor_name,
+				a.性别 as sex,
+				a.身份证号 as id_card,
+				a.出生日期 as birthday,
+				'' as job_title_code,
+				a.专业技术职务 as job_title,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				'' as zmap_doctor_code,
+				'' as zmap_doctor_name,
+				'' as password
+			from 人员表 a
+		]]>
+	</select>
+	<!-- 多个参数的形式，需要使用map来存储-->
+    <select id="selectByPagination" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        <![CDATA[
+        select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as doctor_code,
+				(select b.部门ID from 部门人员 b where a.id=b.人员ID and b.缺省=1) as dept_code,
+				'' as zmap_dept_code,
+				'' as status,
+				a.姓名 as doctor_name,
+				a.性别 as sex,
+				a.身份证号 as id_card,
+				a.出生日期 as birthday,
+				'' as job_title_code,
+				a.专业技术职务 as job_title,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				'' as zmap_doctor_code,
+				'' as zmap_doctor_name,
+				'' as password
+			from 人员表 a
+		   ) t where rownum <= ${curPageRow}
+		 ) where rn > ${prePageRow}
+		 ]]>
+    </select>
+    <select id="selectByPaginationWithDateTime" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        	<![CDATA[
+        	select * from (
+			  select t.*,rownum rn from
+			  (
+			    select 
+					a.ID as doctor_code,
+					(select b.部门ID from 部门人员 b where a.id=b.人员ID and b.缺省=1) as dept_code,
+					'' as zmap_dept_code,
+					'' as status,
+					a.姓名 as doctor_name,
+					a.性别 as sex,
+					a.身份证号 as id_card,
+					a.出生日期 as birthday,
+					'' as job_title_code,
+					a.专业技术职务 as job_title,
+					'' as sub_hospital_code,
+					'2' as hospital_code,
+					'' as zmap_doctor_code,
+					'' as zmap_doctor_name,
+					'' as password
+				from 人员表 a
+			    where to_char(a.建档时间,'yyyy-MM-dd') = #{curDate}
+			   ) t where rownum <= ${curPageRow}
+			 ) where rn > ${prePageRow}
+			 ]]>
+    </select>
+    <select id="countNum" resultType="int">
+        <![CDATA[
+        select count(*) from 人员表
+        ]]>
+    </select>
+    <select id="countNumWithDate" parameterType="String" resultType="int">
+    	<![CDATA[
+        select count(*) from 人员表  where to_char(建档时间,'yyyy-MM-dd') = #{curDate}
+        ]]>
+    </select>
+</mapper>

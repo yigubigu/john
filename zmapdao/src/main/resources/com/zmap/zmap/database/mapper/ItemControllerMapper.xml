@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.database.mapper.ItemControllerMapper">
+    <resultMap type="com.zmap.zmap.database.model.ItemControllerModel" id="itemMap">
+         <result column="remark" property="itemCode"/>
+         <result column="fee_type_code" property="itemTypeCode"/>
+         <result column="fee_type_name" property="itemTypeName"/>
+         <result column="fee_item_name" property="itemName"/>
+         <result column="fee_item_unit" property="itemUnit"/>
+         <result column="fee_item_price" property="itemPrice"/>
+         <result column="explanation" property="explanation"/>
+         <result column="hospital_code" property="hospitalCode"/>
+    </resultMap>
+    
+    <select id="selectItemType" parameterType="java.util.Map" resultMap="itemMap">
+     select DISTINCT fee_type_name from zmap_l_fee_item 
+     where hospital_code = #{hospitalCode,jdbcType = VARCHAR}
+    </select>
+    
+    <select id="selectItemFromZmapByInfro" parameterType="java.util.Map" resultMap="itemMap">
+    select remark,fee_item_name,fee_item_code,fee_type_code,fee_type_name,fee_item_unit,fee_item_price
+    from zmap_l_fee_item
+    <trim prefix="where" prefixOverrides="and|or">
+       <if test="itemName != null">
+         fee_item_name like '${itemName}%'
+       </if>
+       <if test="itemCode != null">
+         and remark like '${itemCode}%'
+       </if>
+       <if test="itemTypeName != null">
+         and fee_type_name like '${itemTypeName}%'
+       </if>
+    </trim>
+    and hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+    </select>
+</mapper>
+

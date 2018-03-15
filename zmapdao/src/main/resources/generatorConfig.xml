@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+<!--  classPathEntry location="d:\green\maven-repository\mysql\mysql-connector-java\6.0.4\mysql-connector-java-6.0.4.jar" /-->
+<!-- <classPathEntry location="D:\cslcon_dev_env\sql_jar\mysql\mysql-connector-java-5.1.36.jar" /> -->
+<classPathEntry location="E:\cslcon_dev_env\sql_jar\mysql\mysql-connector-java-5.1.36.jar" />
+
+  <context id="mysql" targetRuntime="MyBatis3">
+  
+  	<commentGenerator>	
+         <property name="suppressDate" value="true"/>                          
+   	</commentGenerator>
+   	              
+    <jdbcConnection 
+    	driverClass="com.mysql.jdbc.Driver"
+        connectionURL="jdbc:mysql://139.196.198.56:3306/zmap?useSSL=false&amp;characterEncoding=utf8&amp;serverTimezone=UTC"
+        userId="root"
+        password="Jth2016">
+    </jdbcConnection>
+   
+   <javaModelGenerator targetPackage="com.zmap.zmap.framework.base.model" targetProject="src\main\java">
+            <property name="enableSubPackages" value="ture"/>
+            <property name="trimStrings" value="true"/>
+   </javaModelGenerator> 
+
+   
+    <!--生成xml mapper文件 路径 -->
+    <sqlMapGenerator targetPackage="com.zmap.zmap.framework.base.mapper" targetProject="src\main\resources">
+         <property name="enableSubPackages" value="ture"/>
+    </sqlMapGenerator>
+
+        <!-- 生成的Dao接口 的包路径 -->
+    <javaClientGenerator type="XMLMAPPER" targetPackage="com.zmap.zmap.framework.base.mapper" targetProject="src\main\java">
+            <property name="enableSubPackages" value="ture"/>
+     </javaClientGenerator>
+
+        <!--对应数据库表名 -->
+     <table tableName="zmap_l_acct_item" domainObjectName="ZmapLAcctItem" 
+     	enableCountByExample="false" 
+		enableUpdateByExample="false" 
+		enableDeleteByExample="false" 
+		enableSelectByExample="false" 
+		selectByExampleQueryId="false" 
+		>
+     </table>
+	<!-- 
+	<table tableName="account"> 
+		<property name="useActualColumnNames" value="true"/>
+	</table>
+ -->
+  </context>
+</generatorConfiguration>

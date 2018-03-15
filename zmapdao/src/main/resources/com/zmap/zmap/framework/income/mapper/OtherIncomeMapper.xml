@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.framework.income.mapper.OtherIncomeMapper">
+	<resultMap type="com.zmap.zmap.framework.income.model.OtherIncomeModel"
+		id="otherIncomeMap">
+		<result column="dept_code" property="deptCode" />
+		<result column="dept_name" property="deptName" />
+		<result column="settle_charge_time" property="feeCount" />
+		<result column="sum1" property="sum1" />
+		<result column="sum2" property="sum2" />
+		<result column="sum" property="sum" />
+		<result column="doctor_code" property="doctorCode" />
+		<result column="doctor_name" property="doctorName" />
+		<result column="hospital_code" property="hospitalCode" />
+	</resultMap>
+
+	<select id="selectDeptcode" parameterType="java.util.Map" resultMap="otherIncomeMap">
+		SELECT dept_code FROM zmap_c_m2_charge
+		WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+		and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+		and charge_time like '${curDate}%'
+		UNION
+		SELECT dept_code FROM zmap_h_m2_charge
+		WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+		and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+		and settle_charge_time like '${curDate}%'
+	</select>
+	<select id="selectClinicOtherIncome" parameterType="java.util.Map" resultMap="otherIncomeMap">
+		SELECT SUM(amount) as feeCount FROM zmap_c_m2_charge
+		WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+		and dept_code=#{deptCode,jdbcType=VARCHAR}
+		and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+		and charge_time like '${curDate}%'
+	</select>
+	<select id="selectHospitalIncome" parameterType="java.util.Map" resultMap="otherIncomeMap">
+
+		SELECT SUM(amount) as feeCount FROM zmap_h_m2_charge
+		WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+		and dept_code=#{deptCode,jdbcType=VARCHAR}
+		and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+		and settle_charge_time like '${curDate}%'
+	</select>
+	<select id="selectDeptName" parameterType="java.util.Map" resultMap="otherIncomeMap">
+
+		SELECT dept_name FROM zmap_r_dept
+		WHERE dept_code=#{deptCode,jdbcType=VARCHAR}
+		AND hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	</select>
+	<select id="selectDoctorcode" parameterType="java.util.Map" resultMap="otherIncomeMap">
+	SELECT doctor_code FROM zmap_c_m2_charge
+	WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+	and dept_code=#{deptCode,jdbcType=VARCHAR}
+	AND charge_time LIKE '${curDate}%'
+	UNION
+	SELECT doctor_code FROM zmap_h_m2_charge
+	WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	and dept_code=#{deptCode,jdbcType=VARCHAR}
+	and  (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+	AND settle_charge_time LIKE '${curDate}%'
+	</select>
+	<select id="selectClinicOtherIncomeByDoctor" parameterType="java.util.Map" resultMap="otherIncomeMap">
+		SELECT SUM(amount) as feeCount FROM zmap_c_m2_charge
+		WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+		and doctor_code=#{doctorCode,jdbcType=VARCHAR}
+		and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+		and dept_code=#{deptCode,jdbcType=VARCHAR}
+		and charge_time like '${curDate}%'
+	</select>
+	<select id="selectHospitalIncomeByDoctor" parameterType="java.util.Map" resultMap="otherIncomeMap">
+
+		SELECT SUM(amount) as feeCount FROM zmap_h_m2_charge
+		WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+		and doctor_code=#{doctorCode,jdbcType=VARCHAR}
+		and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+		and dept_code=#{deptCode,jdbcType=VARCHAR}
+		and settle_charge_time like '${curDate}%'
+	</select>
+	<select id="selectDoctorName" parameterType="java.util.Map" resultMap="otherIncomeMap">
+
+	SELECT doctor_name FROM zmap_r_doctor
+	WHERE doctor_code=#{doctorCode,jdbcType=VARCHAR}
+	AND hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	</select>
+	<select id="selectSum" parameterType="java.util.Map" resultMap="otherIncomeMap">
+
+	SELECT (sum1+sum2) as sum FROM (
+	(SELECT SUM(amount) as sum1 FROM zmap_c_m2_charge
+	WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+	and charge_time like '${curDate}%') a,
+	(SELECT SUM(amount) as sum2 FROM zmap_h_m2_charge
+	WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	and (acct_item_code=5 or acct_item_code=20 or acct_item_code=18)
+	and settle_charge_time like '${curDate}%')b)
+	</select>
+
+</mapper>

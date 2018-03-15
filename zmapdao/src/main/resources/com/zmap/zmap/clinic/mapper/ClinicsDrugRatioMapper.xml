@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.clinic.mapper.ClinicsDrugRatioMapper">
+   <resultMap type="com.zmap.zmap.clinic.model.ClinicsDrugRatioModel" id="ClinicsDrugRatioMap">
+        <result column="hospital_code" property="hospitalCode"/>
+        <result column="dept_code" property="deptCode"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="doctor_code" property="doctorCode"/>
+        <result column="doctor_name" property="doctorName"/>
+        <result column="feeCount" property="clinicsDrugIncome"/>
+        <result column="deptFeeCount" property="deptDrugIncome"/>
+        <result column="doctorFeeCount" property="doctorDrugIncome"/>
+   </resultMap>
+   
+   
+   <select id="selectClinicsDrugIncomeByDate" parameterType="java.util.Map" resultMap="ClinicsDrugRatioMap">
+   select sum(amount) as feeCount   
+   from zmap_c_m2_charge b 
+   where  b.fee_type_code in ('5','6','7','9','2','4','14','7','3','11','10','6','15','13','16')
+   and  b.charge_time LIKE '${curDate}%' 
+   and  b.hospital_code = #{hospitalCode,jdbcType = VARCHAR};
+   </select>
+   
+   
+   <select id="selectClinicsDrugIncomeByDept" parameterType="java.util.Map" resultMap="ClinicsDrugRatioMap">
+   select b.dept_code,sum(amount) as deptFeeCount   
+   from zmap_c_m2_charge b 
+   where b.fee_type_code in ('5','6','7','9','2','4','14','7','3','11','10','6','15','13','16')
+   and  b.charge_time LIKE '${curDate}%' 
+   and  b.hospital_code = #{hospitalCode,jdbcType = VARCHAR}
+   group by b.dept_code;
+   </select>
+   
+   <select id="selectClinicsDrugIncomeByDoctor" parameterType="java.util.Map" resultMap="ClinicsDrugRatioMap">
+   SELECT c.doctor_code,SUM(amount) as doctorFeeCount,c.dept_code
+   FROM zmap_c_m2_charge c
+   WHERE c.hospital_code = #{hospitalCode,jdbcType = VARCHAR} 
+   and c.fee_type_code in ('5','6','7','9','2','4','14','7','3','11','10','6','15','13','16') 
+   and c.charge_time LIKE '${curDate}%'
+   and c.dept_code=#{deptCode,jdbcType=VARCHAR}
+   GROUP BY doctor_code;
+
+   </select>
+
+</mapper>

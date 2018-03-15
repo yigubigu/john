@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.his.basedata.mapper.RPatientMapper">
+	<resultMap id="baseMap" type="com.zmap.his.basedata.model.RPatientModel">
+		<result column="patient_code" jdbcType="VARCHAR" property="patientCode" />
+	    <result column="patient_name" jdbcType="VARCHAR" property="patientName" />
+	    <result column="sex" jdbcType="VARCHAR" property="sex" />
+	    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+	    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+	    <result column="phone" jdbcType="VARCHAR" property="phone" />
+	    <result column="marriage_status" jdbcType="VARCHAR" property="marriageStatus" />
+	    <result column="addr" jdbcType="VARCHAR" property="addr" />
+	    <result column="drug_allergic_his" jdbcType="VARCHAR" property="drugAllergicHis" />
+	    <result column="insure_id" jdbcType="VARCHAR" property="insureId" />
+	    <result column="medical_card_no" jdbcType="VARCHAR" property="medicalCardNo" />
+	    <result column="case_book_no" jdbcType="VARCHAR" property="caseBookNo" />
+	    <result column="sub_hospital_code" jdbcType="VARCHAR" property="subHospitalCode" />
+	    <result column="hospital_code" jdbcType="VARCHAR" property="hospitalCode" />
+	    <result column="name_spell" jdbcType="VARCHAR" property="nameSpell" />
+	    <result column="english_name" jdbcType="VARCHAR" property="englishName" />
+	    <result column="in_hos_no" jdbcType="VARCHAR" property="inHosNo" />
+	    <result column="citizenship" jdbcType="VARCHAR" property="citizenship" />
+	    <result column="nation" jdbcType="VARCHAR" property="nation" />
+	    <result column="identity" jdbcType="VARCHAR" property="identity" />
+	    <result column="charge_type" jdbcType="VARCHAR" property="chargeType" />
+	    <result column="contract_unit" jdbcType="VARCHAR" property="contractUnit" />
+	    <result column="postcode" jdbcType="VARCHAR" property="postcode" />
+	    <result column="home_tel" jdbcType="VARCHAR" property="homeTel" />
+	    <result column="unit_tel" jdbcType="VARCHAR" property="unitTel" />
+	    <result column="contact_man_name" jdbcType="VARCHAR" property="contactManName" />
+	    <result column="relation" jdbcType="VARCHAR" property="relation" />
+	    <result column="contact_addr" jdbcType="VARCHAR" property="contactAddr" />
+	    <result column="contact_postcode" jdbcType="VARCHAR" property="contactPostcode" />
+	    <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone" />
+	    <result column="is_vip" jdbcType="VARCHAR" property="isVip" />
+	    <result column="create_date" jdbcType="VARCHAR" property="createDate" />
+	    <result column="is_in_system" jdbcType="VARCHAR" property="isInSystem" />
+	    <result column="in_hos_from" jdbcType="VARCHAR" property="inHosFrom" />
+	    <result column="edu_background" jdbcType="VARCHAR" property="eduBackground" />
+	    <result column="race" jdbcType="VARCHAR" property="race" />
+	    <result column="religion" jdbcType="VARCHAR" property="religion" />
+	    <result column="native_language" jdbcType="VARCHAR" property="nativeLanguage" />
+	    <result column="second_language" jdbcType="VARCHAR" property="secondLanguage" />
+	    <result column="certi_type" jdbcType="VARCHAR" property="certiType" />
+	    <result column="member_code" jdbcType="VARCHAR" property="memberCode" />
+	</resultMap>
+	<select id="selectTop1"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+				a.病人ID as patient_code,
+				a.姓名 as patient_name,
+				a.性别 as sex,
+				a.身份证号 as id_card,
+				a.出生日期 as birthday,
+				a.联系人电话 as phone,
+				a.婚姻状况 as marriage_status,
+				a.联系人地址 as addr,
+				'' as drug_allergic_his,
+				a.医保号 as insure_id,
+				a.就诊卡号 as medical_card_no,
+				'' as  case_book_no,
+				'' as  sub_hospital_code,
+				'2' as hospital_code,
+				'' as name_spell,
+				'' as english_name,
+				a.住院号 as in_hos_no,
+				a.国籍 as citizenship,
+				a.民族 as nation,
+				a.身份 as identity,
+				a.医疗付款方式 as charge_type,
+				a.合同单位ID as contract_unit,
+				a.单位邮编 as postcode,
+				a.家庭电话 as home_tel,
+				a.单位电话 as unit_tel,
+				a.联系人姓名 as contact_man_name,
+				a.联系人关系 as relation,
+				a.联系人地址 as contact_addr,
+				'' as contact_postcode,
+				'' as contact_phone,
+				'' as  is_vip,
+				a.登记时间 create_date,
+				'' as is_in_system,
+				'' as in_hos_from,
+				a.学历 edu_background,
+				'' as race,
+				'' as religion,
+				'' as native_language,
+				'' as second_language,
+				'' as certi_type,
+				'' as member_code
+			from  病人信息 a
+		   ) t where rownum <=1
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectTop50"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+				a.病人ID as patient_code,
+				a.姓名 as patient_name,
+				a.性别 as sex,
+				a.身份证号 as id_card,
+				a.出生日期 as birthday,
+				a.联系人电话 as phone,
+				a.婚姻状况 as marriage_status,
+				a.联系人地址 as addr,
+				'' as drug_allergic_his,
+				a.医保号 as insure_id,
+				a.就诊卡号 as medical_card_no,
+				'' as  case_book_no,
+				'' as  sub_hospital_code,
+				'2' as hospital_code,
+				'' as name_spell,
+				'' as english_name,
+				a.住院号 as in_hos_no,
+				a.国籍 as citizenship,
+				a.民族 as nation,
+				a.身份 as identity,
+				a.医疗付款方式 as charge_type,
+				a.合同单位ID as contract_unit,
+				a.单位邮编 as postcode,
+				a.家庭电话 as home_tel,
+				a.单位电话 as unit_tel,
+				a.联系人姓名 as contact_man_name,
+				a.联系人关系 as relation,
+				a.联系人地址 as contact_addr,
+				'' as contact_postcode,
+				'' as contact_phone,
+				'' as  is_vip,
+				a.登记时间 create_date,
+				'' as is_in_system,
+				'' as in_hos_from,
+				a.学历 edu_background,
+				'' as race,
+				'' as religion,
+				'' as native_language,
+				'' as second_language,
+				'' as certi_type,
+				'' as member_code
+			from  病人信息 a
+		   ) t where rownum <=50
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectAllWithoutPagination"  resultMap="baseMap">
+		<![CDATA[
+		    select
+				a.病人ID as patient_code,
+				a.姓名 as patient_name,
+				a.性别 as sex,
+				a.身份证号 as id_card,
+				a.出生日期 as birthday,
+				a.联系人电话 as phone,
+				a.婚姻状况 as marriage_status,
+				a.联系人地址 as addr,
+				'' as drug_allergic_his,
+				a.医保号 as insure_id,
+				a.就诊卡号 as medical_card_no,
+				'' as  case_book_no,
+				'' as  sub_hospital_code,
+				'2' as hospital_code,
+				'' as name_spell,
+				'' as english_name,
+				a.住院号 as in_hos_no,
+				a.国籍 as citizenship,
+				a.民族 as nation,
+				a.身份 as identity,
+				a.医疗付款方式 as charge_type,
+				a.合同单位ID as contract_unit,
+				a.单位邮编 as postcode,
+				a.家庭电话 as home_tel,
+				a.单位电话 as unit_tel,
+				a.联系人姓名 as contact_man_name,
+				a.联系人关系 as relation,
+				a.联系人地址 as contact_addr,
+				'' as contact_postcode,
+				'' as contact_phone,
+				'' as  is_vip,
+				a.登记时间 create_date,
+				'' as is_in_system,
+				'' as in_hos_from,
+				a.学历 edu_background,
+				'' as race,
+				'' as religion,
+				'' as native_language,
+				'' as second_language,
+				'' as certi_type,
+				'' as member_code
+			from  病人信息 a
+		]]>
+	</select>
+	<!-- 多个参数的形式，需要使用map来存储-->
+    <select id="selectByPagination" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        <![CDATA[
+        select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+				a.病人ID as patient_code,
+				a.姓名 as patient_name,
+				a.性别 as sex,
+				a.身份证号 as id_card,
+				a.出生日期 as birthday,
+				a.联系人电话 as phone,
+				a.婚姻状况 as marriage_status,
+				a.联系人地址 as addr,
+				'' as drug_allergic_his,
+				a.医保号 as insure_id,
+				a.就诊卡号 as medical_card_no,
+				'' as  case_book_no,
+				'' as  sub_hospital_code,
+				'2' as hospital_code,
+				'' as name_spell,
+				'' as english_name,
+				a.住院号 as in_hos_no,
+				a.国籍 as citizenship,
+				a.民族 as nation,
+				a.身份 as identity,
+				a.医疗付款方式 as charge_type,
+				a.合同单位ID as contract_unit,
+				a.单位邮编 as postcode,
+				a.家庭电话 as home_tel,
+				a.单位电话 as unit_tel,
+				a.联系人姓名 as contact_man_name,
+				a.联系人关系 as relation,
+				a.联系人地址 as contact_addr,
+				'' as contact_postcode,
+				'' as contact_phone,
+				'' as  is_vip,
+				a.登记时间 create_date,
+				'' as is_in_system,
+				'' as in_hos_from,
+				a.学历 edu_background,
+				'' as race,
+				'' as religion,
+				'' as native_language,
+				'' as second_language,
+				'' as certi_type,
+				'' as member_code
+			from  病人信息 a
+		   ) t where rownum <= ${curPageRow}
+		 ) where rn > ${prePageRow}
+		 ]]>
+    </select>
+    <select id="selectByPaginationWithDateTime" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        	<![CDATA[
+        	select * from (
+			  select t.*,rownum rn from
+			  (
+			    select
+					a.病人ID as patient_code,
+					a.姓名 as patient_name,
+					a.性别 as sex,
+					a.身份证号 as id_card,
+					a.出生日期 as birthday,
+					a.联系人电话 as phone,
+					a.婚姻状况 as marriage_status,
+					a.联系人地址 as addr,
+					'' as drug_allergic_his,
+					a.医保号 as insure_id,
+					a.就诊卡号 as medical_card_no,
+					'' as  case_book_no,
+					'' as  sub_hospital_code,
+					'2' as hospital_code,
+					'' as name_spell,
+					'' as english_name,
+					a.住院号 as in_hos_no,
+					a.国籍 as citizenship,
+					a.民族 as nation,
+					a.身份 as identity,
+					a.医疗付款方式 as charge_type,
+					a.合同单位ID as contract_unit,
+					a.单位邮编 as postcode,
+					a.家庭电话 as home_tel,
+					a.单位电话 as unit_tel,
+					a.联系人姓名 as contact_man_name,
+					a.联系人关系 as relation,
+					a.联系人地址 as contact_addr,
+					'' as contact_postcode,
+					'' as contact_phone,
+					'' as  is_vip,
+					a.登记时间 create_date,
+					'' as is_in_system,
+					'' as in_hos_from,
+					a.学历 edu_background,
+					'' as race,
+					'' as religion,
+					'' as native_language,
+					'' as second_language,
+					'' as certi_type,
+					'' as member_code
+				from  病人信息 a
+			    where to_char(a.登记时间,'yyyy-MM-dd') = #{curDate}
+			   ) t where rownum <= ${curPageRow}
+			 ) where rn > ${prePageRow}
+			 ]]>
+    </select>
+    <select id="countNum" resultType="int">
+        <![CDATA[
+        select count(*) from 病人信息
+        ]]>
+    </select>
+    <select id="countNumWithDate" parameterType="String" resultType="int">
+    	<![CDATA[
+        select count(*) from 病人信息  where to_char(登记时间,'yyyy-MM-dd') = #{curDate}
+        ]]>
+    </select>
+</mapper>

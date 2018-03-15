@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.clinic.mapper.EmergencyVisitsMapper">
+  <resultMap type="com.zmap.zmap.clinic.model.EmergencyVisitsModel" id="emergencyVisitsMap">  
+    <result column="visits_count"  property="visitsCount" />  
+    <result column="reg_time"  property="regTime" />
+     <result column="clinic_type"  property="clinicType" />
+     <result column="dept_code" property="deptCode"/>
+     <result column="hospital_code" property="hospitalCode"/>
+  </resultMap>
+  
+  <select id="selectDayEmergencyVisitsByHour" parameterType="java.util.Map" resultMap="emergencyVisitsMap">
+		SELECT count(*) as visitsCount
+		FROM zmap_c_m1_clinics 
+		where clinic_type = '2'
+		and dept_code in(98,99,2068,328,2548,3030)
+		and reg_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR} 
+		and hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	</select>
+
+  <select id="selectDayEmergencyVisitsSum" parameterType="java.util.Map" resultMap="emergencyVisitsMap">
+		SELECT count(*) as visitsCount
+		FROM zmap_c_m1_clinics 
+		where clinic_type = '2'
+		and dept_code in(98,99,2068,328,2548,3030)
+		and reg_time LIKE '${curDate}%' 
+		and hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	</select>
+  </mapper>

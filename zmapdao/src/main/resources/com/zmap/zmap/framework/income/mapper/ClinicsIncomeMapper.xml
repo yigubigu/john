@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.framework.income.mapper.ClinicsIncomeMapper">
+  <resultMap type="com.zmap.zmap.framework.income.model.ClinicsIncomeModel" id="clinicsIncomeMap">  
+    <result column="dept_code"  property="deptCode" />  
+    <result column="dept_name"  property="deptName" />
+     <result column="fee_count"  property="feeCount" />
+     <result column="doctor_code" property="doctorCode"/>
+     <result column="doctor_name" property="doctorName"/> 
+     <result column="hospital_code" property="hospitalCode"/>
+     <result column="charge_time" property="chargeTime"/>
+  </resultMap>
+  
+  <select id="selectDayClinicsIncomeByHour" parameterType="java.util.Map" resultMap="clinicsIncomeMap">
+		SELECT
+		SUM(c.amount) as feeCount 
+		from
+		zmap_c_m2_charge c
+		WHERE
+		c.charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR} 
+		and  c.hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	</select>
+  <select id="selectDayClinicsIncomeByDept" parameterType="java.util.Map" resultMap="clinicsIncomeMap">
+	SELECT SUM(c.amount) as feeCount,d.dept_name,c.dept_code
+	from
+	zmap_c_m2_charge c,zmap_r_dept d
+	WHERE c.dept_code=d.dept_code
+	and
+	c.hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	and
+	c.hospital_code=d.hospital_code
+	and c.charge_time between
+	#{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+	GROUP BY
+	c.dept_code;
+	</select>
+  <select id="selectDayClinicsIncomeByDeptz" parameterType="java.util.Map" resultMap="clinicsIncomeMap">
+	SELECT SUM(c.amount) as feeCount,d.dept_name,c.dept_code
+	from
+	zmap_c_m2_charge c,zmap_r_dept d
+	WHERE c.dept_code=d.dept_code
+	and
+	c.hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	and
+	c.hospital_code=d.hospital_code
+	and c.charge_time between
+	#{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+	GROUP BY
+	c.dept_code;
+	</select>
+  <select id="selectDayClinicsIncomeByDoctor" parameterType="java.util.Map" resultMap="clinicsIncomeMap">
+	SELECT d.doctor_name,SUM(c.amount) as feeCount
+    from zmap_c_m2_charge c,zmap_r_doctor d
+    where c.doctor_code=d.doctor_code
+    and c.charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+    and c.hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+    and c.hospital_code=d.hospital_code
+    and c.dept_code=#{deptcode,jdbcType=VARCHAR}    
+    GROUP BY c.doctor_code;
+	</select>
+  <select id="selectDayClinicsIncomeSum" parameterType="java.util.Map" resultMap="clinicsIncomeMap">
+	SELECT
+		SUM(c.amount) as feeCount 
+		from
+		zmap_c_m2_charge c
+		WHERE
+		c.charge_time  LIKE '${curDate}%' 
+		and  c.hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+	</select>
+  </mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.hospitalize.mapper.HospitalizeHighOwePersonMapper">
+    <resultMap type="com.zmap.zmap.hospitalize.model.HospitalizeHighOwePersonModel" id="HighOweMap">
+        <result column="sickman_code" property="sickmanCode"/>
+        <result column="hospital_code" property="hospitalCode"/>
+        <result column="resp_dept" property="deptCode"/>
+        <result column="dept_code" property="deptCode"/>
+        <result column="prepayFeeCount" property="prepayFeeCount"/>
+        <result column="oweFeeCount" property="oweFeeCount"/>   
+        <result column="personTime" property="personTime"/>
+        <result column="feeCount" property="feeCount"/>
+    </resultMap>
+    
+    
+    <select id="selectSickmanOweFeeCount" parameterType="java.util.Map" resultMap="HighOweMap">
+    SELECT sickman_code,SUM(amount) as oweFeeCount
+    from zmap_h_m2_charge
+    where hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+    and settle_charge_time is NULL
+    and sickman_code = #{sickmanCode,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectSickmanPrepayFeeCount" parameterType="java.util.Map" resultMap="HighOweMap">
+    SELECT sickman_code,SUM(amount) as prepayFeeCount
+    FROM jb_prepay_charge
+    WHERE prepay_type_code = '2'
+    AND sickman_code in (
+    SELECT sickman_code
+    FROM zmap_h_m1_hospitalize h
+    WHERE h.hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+    and h.sick_bed_code is not NULL
+    and h.out_date is NULL
+    ) GROUP BY sickman_code
+    </select>
+    
+    <select id="selectSickmanOweFeeByDept" parameterType="java.util.Map" resultMap="HighOweMap">
+    select dept_code,SUM(rec_amount) as feeCount
+    from zmap_h_m2_charge
+    where sickman_code in 
+    <foreach collection="sickmanCodes" index="index" item="item" open="(" separator="," close=")"> 
+            #{item} 
+    </foreach> 
+    and hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+    group by dept_code;
+    </select>
+    
+    <select id="selectSickmanTimesByDept" parameterType="java.util.Map" resultMap="HighOweMap">
+    select resp_dept ,count(sickman_code) as personTime
+    from zmap_h_m1_hospitalize
+    where hospital_code = #{hospitalCode,jdbcType=VARCHAR}
+    and sickman_code in 
+    <foreach collection="sickmanCodes" index="index" item="item" open="(" separator="," close=")"> 
+            #{item} 
+    </foreach> 
+    group by resp_dept;
+    </select>
+    
+    
+</mapper>

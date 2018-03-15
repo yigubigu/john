@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.framework.hospitalize.mapper.AdmittedRateMapper">
+   <resultMap type="com.zmap.zmap.framework.hospitalize.model.AdmittedRateModel" id="AdmittedRateMap">
+        <result column="admitted_num" property="admittedNum"/>
+        <result column="in_hos_id" property="inHosId"/>
+        <result column="in_date" property="inDate"/>
+        <result column="out_date" property="outDate"/>
+        <result column="in_hos_source" property="inHosSource"/>
+        <result column="hospital_code" property="hospitalCode"/>
+        <result column="resp_dept" property="respDept"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="resp_doctor_code" property="respDoctorCode"/>
+        <result column="doctor_name" property="doctorName"/>
+        <result column="admitted_num_d" property="admittedNumd"/>
+        <result column="admitted_num_dd" property="admittedNumdd"/>
+        <result column="dept_code" property="deptCode"/>
+        <result column="doctor_code" property="doctorCode"/>
+   </resultMap>
+   
+   
+   <select id="selectDayAdmittedRate" parameterType="java.util.Map" resultMap="AdmittedRateMap">
+   	select count(in_hos_id) as admittedNum from zmap_h_m1_hospitalize 
+	where in_hos_source in ('门诊','急诊')
+	and in_date LIKE '${curDate}%'
+	and out_date is NULL
+	and hospital_code = #{hospitalCode,jdbcType = VARCHAR};
+   </select>
+   
+   
+   <select id="selectAdmittedRateByDept" parameterType="java.util.Map" resultMap="AdmittedRateMap">
+   	select resp_dept,COUNT(in_hos_id) as admittedNumd from zmap_h_m1_hospitalize
+	where in_hos_source in ('门诊','急诊')
+	and in_date LIKE '${curDate}%'
+	and out_date is NULL
+	and hospital_code = #{hospitalCode,jdbcType = VARCHAR}
+	GROUP BY resp_dept;
+   </select>
+   
+   <select id="selectAdmittedRateByDoctor" parameterType="java.util.Map" resultMap="AdmittedRateMap">
+   	select resp_doctor_code as doctorCode,COUNT(in_hos_id) as admittedNumdd from zmap_h_m1_hospitalize
+	where in_hos_source in ('门诊','急诊')
+	and in_date LIKE '${curDate}%'
+	and out_date is NULL
+	and resp_dept=#{deptCode,jdbcType=VARCHAR}
+	and hospital_code = #{hospitalCode,jdbcType = VARCHAR}
+	GROUP BY resp_doctor_code;
+
+   </select>
+
+</mapper>

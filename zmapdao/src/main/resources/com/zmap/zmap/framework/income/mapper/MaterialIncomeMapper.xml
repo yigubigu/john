@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.framework.income.mapper.MaterialIncomeMapper">
+  <resultMap type="com.zmap.zmap.framework.income.model.MaterialIncomeModel" id="deptMaterialIncomeMap">  
+    <result column="dept_code"  property="deptCode" />  
+    <result column="dept_name"  property="deptName" />
+     <result column="fee_count"  property="feeCount" />
+     <result column="doctor_code" property="doctorCode"/>
+     <result column="doctor_name" property="doctorName"/> 
+     <result column="hospital_code" property="hospitalCode"/>
+     <result column="sum" property="sum"/>
+  </resultMap>
+  
+  
+  <select id="selectMaterialIncomeByDeptCode" parameterType="java.util.Map" resultMap="deptMaterialIncomeMap">
+  SELECT dept_code FROM zmap_c_m2_charge
+WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+UNION
+SELECT dept_code FROM zmap_h_m2_charge
+WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and settle_charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+  </select>
+  <select id="selectClinicMaterialIncomeByDept" parameterType="java.util.List" resultMap="deptMaterialIncomeMap">
+   SELECT SUM(amount) as feeCount FROM zmap_c_m2_charge
+   WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+and dept_code=#{deptCode,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectHospitalizeMaterialIncomeByDept" parameterType="java.util.Map" resultMap="deptMaterialIncomeMap">
+  SELECT SUM(amount) as feeCount FROM zmap_h_m2_charge
+   WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and settle_charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+and dept_code=#{deptCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectSumMaterialIncomeByDept" parameterType="java.util.Map" resultMap="deptMaterialIncomeMap">
+  SELECT (sum1+sum2) as sum FROM (
+	(SELECT SUM(amount) as sum1 FROM zmap_c_m2_charge
+   WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and charge_time like '${curDate}%'
+) a,
+	(SELECT SUM(amount) as sum2 FROM zmap_h_m2_charge
+   WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and settle_charge_time like '${curDate}%'
+)b)
+  </select>
+  <select id="selectMaterialIncomeByDoctorCode" parameterType="java.util.Map" resultMap="deptMaterialIncomeMap">
+  SELECT doctor_code  FROM zmap_c_m2_charge
+   WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+and dept_code=#{deptCode,jdbcType=VARCHAR}
+union
+SELECT doctor_code FROM zmap_h_m2_charge
+WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and settle_charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+and dept_code=#{deptCode,jdbcType=VARCHAR}
+
+  </select>
+  
+   <select id="selectClinicMaterialIncomeByDoctor" parameterType="java.util.List" resultMap="deptMaterialIncomeMap">
+   SELECT SUM(amount) as feeCount FROM zmap_c_m2_charge
+   WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+and dept_code=#{deptCode,jdbcType=VARCHAR}
+and doctor_code=#{doctorCode,jdbcType=VARCHAR}
+  </select>
+   <select id="selectHospitalMaterialIncomeByDoctor" parameterType="java.util.List" resultMap="deptMaterialIncomeMap">
+   SELECT SUM(amount) as feeCount FROM zmap_h_m2_charge
+   WHERE hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+and acct_item_code=17
+and settle_charge_time between  #{startTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR}
+and dept_code=#{deptCode,jdbcType=VARCHAR}
+and doctor_code=#{doctorCode,jdbcType=VARCHAR}
+  </select>
+
+  
+  </mapper>

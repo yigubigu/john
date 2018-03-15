@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.his.clinic.mapper.JbPrepayChargeSyncMapper">
+	<resultMap id="baseMap" type="com.zmap.his.clinic.model.JbPrepayChargeSyncModel">
+		<result column="prepay_code" jdbcType="VARCHAR" property="prepayCode" />
+	    <result column="rec_type_code" jdbcType="VARCHAR" property="recTypeCode" />
+	    <result column="reg_seq" jdbcType="VARCHAR" property="regSeq" />
+	    <result column="rec_status" jdbcType="VARCHAR" property="recStatus" />
+	    <result column="sickman_code" jdbcType="VARCHAR" property="sickmanCode" />
+	    <result column="mhome_page_code" jdbcType="VARCHAR" property="mhomePageCode" />
+	    <result column="dept_code" jdbcType="VARCHAR" property="deptCode" />
+	    <result column="pay_company" jdbcType="VARCHAR" property="payCompany" />
+	    <result column="company_bank" jdbcType="VARCHAR" property="companyBank" />
+	    <result column="company_acct_no" jdbcType="VARCHAR" property="companyAcctNo" />
+	    <result column="remark" jdbcType="VARCHAR" property="remark" />
+	    <result column="amount" jdbcType="VARCHAR" property="amount" />
+	    <result column="settle_type_code" jdbcType="VARCHAR" property="settleTypeCode" />
+	    <result column="collect_time" jdbcType="VARCHAR" property="collectTime" />
+	    <result column="oper_code" jdbcType="VARCHAR" property="operCode" />
+	    <result column="oper_name" jdbcType="VARCHAR" property="operName" />
+	    <result column="agaist_amount" jdbcType="VARCHAR" property="agaistAmount" />
+	    <result column="settle_acct_code" jdbcType="VARCHAR" property="settleAcctCode" />
+	    <result column="rec_amount" jdbcType="VARCHAR" property="recAmount" />
+	    <result column="change_amount" jdbcType="VARCHAR" property="changeAmount" />
+	    <result column="prepay_type_code" jdbcType="VARCHAR" property="prepayTypeCode" />
+	    <result column="settle_seq" jdbcType="VARCHAR" property="settleSeq" />
+	</resultMap>
+	<select id="selectTop1"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as prepay_code,
+				a.记录性质 as rec_type_code,
+				a.NO as reg_seq,
+				a.记录状态 as rec_status,
+				a.病人id as sickman_code,
+				a.主页id as mhome_page_code,
+				a.科室id as dept_code,
+				a.缴款单位 as pay_company,
+				a.单位开户行 as company_bank,
+				a.单位帐号 as company_acct_no,
+				a.摘要 as remark,
+				a.金额 as amount,
+				(select b.编码 from 结算方式 b where b.名称= a.结算方式)as settle_type_code,
+				a.收款时间 as collect_time,
+				a.操作员编号 as oper_code,
+				a.操作员姓名 as oper_name,
+				a.冲预交 as agaist_amount,
+				a.结帐id as settle_acct_code,
+				a.缴款 as rec_amount,
+				a.找补 as change_amount,
+				a.预交类别 as prepay_type_code,
+				a.结算序号 as settle_seq
+			from 病人预交记录 a
+		   ) t where rownum <=1
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectTop50"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as prepay_code,
+				a.记录性质 as rec_type_code,
+				a.NO as reg_seq,
+				a.记录状态 as rec_status,
+				a.病人id as sickman_code,
+				a.主页id as mhome_page_code,
+				a.科室id as dept_code,
+				a.缴款单位 as pay_company,
+				a.单位开户行 as company_bank,
+				a.单位帐号 as company_acct_no,
+				a.摘要 as remark,
+				a.金额 as amount,
+				(select b.编码 from 结算方式 b where b.名称= a.结算方式)as settle_type_code,
+				a.收款时间 as collect_time,
+				a.操作员编号 as oper_code,
+				a.操作员姓名 as oper_name,
+				a.冲预交 as agaist_amount,
+				a.结帐id as settle_acct_code,
+				a.缴款 as rec_amount,
+				a.找补 as change_amount,
+				a.预交类别 as prepay_type_code,
+				a.结算序号 as settle_seq
+			from 病人预交记录 a
+		   ) t where rownum <=50
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectAllRecord"  resultMap="baseMap">
+		<![CDATA[
+		    select 
+				a.ID as prepay_code,
+				a.记录性质 as rec_type_code,
+				a.NO as reg_seq,
+				a.记录状态 as rec_status,
+				a.病人id as sickman_code,
+				a.主页id as mhome_page_code,
+				a.科室id as dept_code,
+				a.缴款单位 as pay_company,
+				a.单位开户行 as company_bank,
+				a.单位帐号 as company_acct_no,
+				a.摘要 as remark,
+				a.金额 as amount,
+				(select b.编码 from 结算方式 b where b.名称= a.结算方式)as settle_type_code,
+				a.收款时间 as collect_time,
+				a.操作员编号 as oper_code,
+				a.操作员姓名 as oper_name,
+				a.冲预交 as agaist_amount,
+				a.结帐id as settle_acct_code,
+				a.缴款 as rec_amount,
+				a.找补 as change_amount,
+				a.预交类别 as prepay_type_code,
+				a.结算序号 as settle_seq
+			from 病人预交记录 a
+		]]>
+	</select>
+	<!-- 多个参数的形式，需要使用map来存储-->
+    <select id="selectByPagination" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        <![CDATA[
+        select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as prepay_code,
+				a.记录性质 as rec_type_code,
+				a.NO as reg_seq,
+				a.记录状态 as rec_status,
+				a.病人id as sickman_code,
+				a.主页id as mhome_page_code,
+				a.科室id as dept_code,
+				a.缴款单位 as pay_company,
+				a.单位开户行 as company_bank,
+				a.单位帐号 as company_acct_no,
+				a.摘要 as remark,
+				a.金额 as amount,
+				(select b.编码 from 结算方式 b where b.名称= a.结算方式)as settle_type_code,
+				a.收款时间 as collect_time,
+				a.操作员编号 as oper_code,
+				a.操作员姓名 as oper_name,
+				a.冲预交 as agaist_amount,
+				a.结帐id as settle_acct_code,
+				a.缴款 as rec_amount,
+				a.找补 as change_amount,
+				a.预交类别 as prepay_type_code,
+				a.结算序号 as settle_seq
+			from 病人预交记录 a
+		   ) t where rownum <= ${curPageRow}
+		 ) where rn > ${prePageRow}
+		 ]]>
+    </select>
+    <select id="selectByPaginationWithDateTime" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        	<![CDATA[
+        	select * from (
+			  select t.*,rownum rn from
+			  (
+			    select 
+					a.ID as prepay_code,
+					a.记录性质 as rec_type_code,
+					a.NO as reg_seq,
+					a.记录状态 as rec_status,
+					a.病人id as sickman_code,
+					a.主页id as mhome_page_code,
+					a.科室id as dept_code,
+					a.缴款单位 as pay_company,
+					a.单位开户行 as company_bank,
+					a.单位帐号 as company_acct_no,
+					a.摘要 as remark,
+					a.金额 as amount,
+					(select b.编码 from 结算方式 b where b.名称= a.结算方式)as settle_type_code,
+					a.收款时间 as collect_time,
+					a.操作员编号 as oper_code,
+					a.操作员姓名 as oper_name,
+					a.冲预交 as agaist_amount,
+					a.结帐id as settle_acct_code,
+					a.缴款 as rec_amount,
+					a.找补 as change_amount,
+					a.预交类别 as prepay_type_code,
+					a.结算序号 as settle_seq
+				from 病人预交记录 a
+			    where to_char(a.收款时间,'yyyy-MM-dd') = #{curDate}
+			   ) t where rownum <= ${curPageRow}
+			 ) where rn > ${prePageRow}
+			 ]]>
+    </select>
+    <select id="countNum" resultType="int">
+        <![CDATA[
+        select count(*) from 病人预交记录
+        ]]>
+    </select>
+    <select id="countNumWithDate" parameterType="String" resultType="int">
+    	<![CDATA[
+        select count(*) from 病人预交记录  where to_char(收款时间,'yyyy-MM-dd') = #{curDate}
+        ]]>
+    </select>
+</mapper>

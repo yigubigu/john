@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.framework.income.mapper.DrugIncomeMapper">
+  <resultMap type="HashMap" id="feeCountMap">  
+    <result column="fee_count"  property="feeCount" />  
+    <result column="fee_name"  property="feeName" />
+     <result column="fee_code"  property="feeCode" />
+  </resultMap>
+  
+  <resultMap type="HashMap" id="deptDrugIncomeMap">  
+    <result column="dept_code"  property="deptCode" />  
+    <result column="dept_name"  property="deptName" />
+     <result column="fee_count"  property="feeCount" />
+  </resultMap>
+  
+  <resultMap type="HashMap" id="doctorDrugIncomeMap">  
+    <result column="doctor_code"  property="doctorCode" />  
+    <result column="doctor_name"  property="doctorName" />
+     <result column="fee_count"  property="feeCount" />
+  </resultMap>  
+  
+  
+  <resultMap type="HashMap" id="drugSumMap">  
+     <result column="fee_count"  property="feeCount" />
+  </resultMap>   
+  
+  
+  <sql id="Base_Column_List">
+    fee_count, fee_name
+  </sql>
+  
+  
+    <select id="selectDaySumIncomeByDrug" parameterType="java.util.Map" resultMap="drugSumMap">
+   
+   select sum(amount) as feeCount   from zmap_l_fee_item a ,zmap_c_m2_charge b where a.fee_item_code=b.fee_item_code and a.fee_type_code in
+   (2,3,5,6,7,'A','B')
+    and  b.charge_time LIKE '${curDate}%' and b.hospital_code=a.hospital_code  and  b.hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+     UNION ALL
+    select sum(amount) as feeCount   from zmap_l_fee_item a ,zmap_h_m2_charge b where a.fee_item_code=b.fee_item_code and a.fee_type_code in
+    (2,3,5,6,7,'A','B')
+    and  b.settle_charge_time LIKE '${curDate}%' and b.hospital_code=a.hospital_code  and  b.hospital_code=#{hospitalCode,jdbcType=VARCHAR}
+  </select> 
+  
+  <select id="selectFeeCode" parameterType="java.util.Map" resultMap="feeCountMap">
+   
+   select fee_type_code as feeCode from zmap_l_fee_item  where fee_type_code in
+     (2,3,5,6,7,'A','B')
+    and hospital_code=#{hospitalCode,jdbcType=VARCHAR}  GROUP BY fee_type_code
+  </select>
+  <select id="selectFeeName" parameterType="java.util.Map" resultMap="feeCountMap">
+   
+   select fee_type_name as feeName  from zmap_l_fee_item  where fee_type_code=#{feeTypeCode,jdbcType=VARCHAR}
+    and hospital_code=#{hospitalCode,jdbcType=VARCHAR}  GROUP BY fee_type_code
+  </select>
+  
+   <select id="selectDayClinicIncomeByDrug" parameterType="java.util.Map" resultMap="feeCountMap">
+   
+   select sum(amount) as feeCount   from  zmap_l_fee_item a ,zmap_c_m2_charge b  where a.fee_item_code=b.fee_item_code and a.fee_type_code=#{feeTypeCode}
+    and  b.charge_time LIKE '${curDate}%' and b.hospital_code=a.hospital_code and  b.hospital_code=#{hospitalCode,jdbcType=VARCHAR}  GROUP BY a.fee_type_code
+    
+  </select>
+   <select id="selectDayHospitalIncomeByDrug" parameterType="java.util.Map" resultMap="feeCountMap">
+   
+   select sum(amount) as feeCount   from zmap_l_fee_item a ,zmap_h_m2_charge b where a.fee_item_code=b.fee_item_code and a.fee_type_code=#{feeTypeCode}
+    and  b.settle_charge_time LIKE '${curDate}%' and b.hospital_code=a.hospital_code and  b.hospital_code=#{hospitalCode,jdbcType=VARCHAR}  GROUP BY a.fee_type_code
+    
+  </select>
+  
+  <select id="selectDayDrugIncomeByDept" parameterType="java.util.Map" resultMap="deptDrugIncomeMap">
+   select  b.dept_code as deptCode, sum(amount) as feeCount from zmap_l_fee_item a ,zmap_c_m2_charge b where    a.fee_item_code=b.fee_item_code  and a.fee_type_code in
+     (2,3,5,6,7,'A','B')
+     and b.charge_time like '${curDate}%' and b.hospital_code=a.hospital_code  and  b.hospital_code=#{hospitalCode,jdbcType=VARCHAR}     GROUP BY b.dept_code
+      UNION ALL
+      select  b.dept_code as deptCode, sum(amount) as feeCount from zmap_l_fee_item a ,zmap_h_m2_charge b where    a.fee_item_code=b.fee_item_code   and a.fee_type_code in
+      (2,3,5,6,7,'A','B')
+     and b.settle_charge_time like '${curDate}%' and b.hospital_code=a.hospital_code  and  b.hospital_code=#{hospitalCode,jdbcType=VARCHAR}     GROUP BY b.dept_code
+  </select>
+ 
+ 
+   <select id="selectDayDrugIncomeByDoctor" parameterType="java.util.Map" resultMap="doctorDrugIncomeMap">
+   select  b.doctor_code as doctorCode,   sum(amount) as feeCount from zmap_l_fee_item a ,zmap_c_m2_charge b where    a.fee_item_code=b.fee_item_code  and b.dept_code=#{curDeptCode,jdbcType=VARCHAR} and a.fee_type_code in
+     (2,3,5,6,7,'A','B') 
+     and b.charge_time like '${curDate}%' and b.hospital_code=a.hospital_code  and  b.hospital_code=#{hospitalCode,jdbcType=VARCHAR}    GROUP BY b.doctor_code
+     UNION ALL
+     select  b.doctor_code as doctorCode,   sum(amount) as feeCount from zmap_l_fee_item a ,zmap_h_m2_charge b where    a.fee_item_code=b.fee_item_code  and b.dept_code=#{curDeptCode,jdbcType=VARCHAR} and a.fee_type_code in
+     (2,3,5,6,7,'A','B')
+     and b.settle_charge_time like '${curDate}%' and b.hospital_code=a.hospital_code  and  b.hospital_code=#{hospitalCode,jdbcType=VARCHAR}    GROUP BY b.doctor_code
+  </select>
+</mapper>

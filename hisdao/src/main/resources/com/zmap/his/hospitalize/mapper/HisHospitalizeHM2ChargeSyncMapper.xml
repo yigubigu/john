@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.his.hospitalize.mapper.HisHospitalizeHM2ChargeSyncMapper">
+	<resultMap id="baseMap" type="com.zmap.his.hospitalize.model.HisHospitalizeHM2ChargeSyncModel">
+		<result column="sick_fee_flow_code" jdbcType="VARCHAR" property="sickFeeFlowCode" />
+		<result column="in_hos_flow_code" jdbcType="VARCHAR" property="inHosFlowCode" />
+		<result column="sickman_code" jdbcType="VARCHAR" property="sickmanCode" />
+		<result column="doctor_code" jdbcType="VARCHAR" property="doctorCode" />
+		<result column="dept_code" jdbcType="VARCHAR" property="deptCode" />
+		<result column="zmap_dept_code" jdbcType="VARCHAR" property="zmapDeptCode" />
+		<result column="fee_date" jdbcType="VARCHAR" property="feeDate" />
+		<result column="fee_source_code" jdbcType="VARCHAR" property="feeSourceCode" />
+		<result column="fee_class_code" jdbcType="VARCHAR" property="feeClassCode" />
+		<result column="fee_type_code" jdbcType="VARCHAR" property="feeTypeCode" />
+		<result column="fee_item_code" jdbcType="VARCHAR" property="feeItemCode" />
+		<result column="zmap_fee_item_code" jdbcType="VARCHAR" property="zmapFeeItemCode" />
+		<result column="size" jdbcType="VARCHAR" property="size" />
+		<result column="unit" jdbcType="VARCHAR" property="unit" />
+		<result column="num" jdbcType="DECIMAL" property="num" />
+		<result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
+		<result column="dis_price" jdbcType="DECIMAL" property="disPrice" />
+		<result column="dis_ratio" jdbcType="VARCHAR" property="disRatio" />
+		<result column="amount" jdbcType="DECIMAL" property="amount" />
+		<result column="phar_code" jdbcType="VARCHAR" property="pharCode" />
+		<result column="sub_hospital_code" jdbcType="VARCHAR" property="subHospitalCode" />
+		<result column="hospital_code" jdbcType="VARCHAR" property="hospitalCode" />
+		<result column="settle_acct_code" jdbcType="VARCHAR" property="settleAcctCode" />
+		<result column="settle_type_code" jdbcType="VARCHAR" property="settleTypeCode" />
+		<result column="is_insure_settle" jdbcType="VARCHAR" property="isInsureSettle" />
+		<result column="acct_item_code" jdbcType="VARCHAR" property="acctItemCode" />
+		<result column="settle_charge_time" jdbcType="VARCHAR" property="settleChargeTime" />
+		<result column="insure_settle_time" jdbcType="VARCHAR" property="insureSettleTime" />
+		<result column="rec_amount" jdbcType="DECIMAL" property="recAmount" />
+		<result column="morder_code" jdbcType="VARCHAR" property="morderCode" />
+	</resultMap>
+	<select id="selectTop1"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+				a.id as sick_fee_flow_code,
+				a.病人id || '_' ||a.主页id as in_hos_flow_code,
+				a.病人id as sickman_code,
+				b.id as doctor_code,
+				a.开单部门id as dept_code,
+				'' as zmap_dept_code,
+				a.登记时间 as fee_date,
+				'' as fee_source_code,
+				case when a.收费类别 in ('5','6','7') then -1 else 1 end fee_class_code,
+				a.收费类别 as fee_type_code,
+				a.收费细目id as fee_item_code,
+				'' as zmap_fee_item_code,
+				'' as "size",
+				a.计算单位 as unit,
+				a.数次 as num,
+				a.标准单价 as unit_price,
+				'0' as dis_price,
+				'0' as dis_ratio,
+				a.实收金额 as amount,
+				'' as phar_code,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				a.结帐id  as settle_acct_code,
+				'' as settle_type_code,
+				case when  not exists(select 1 from 保险结算记录 c where c.记录id= a.结帐id) then '0' else '1' end as is_insure_settle,
+				a.收入项目id as acct_item_code,
+				(select d.收费时间 from 病人结帐记录 d where d.id = a.结帐id ) as settle_charge_time,
+		        (select e.结算时间 from 保险结算记录 e where e.记录id= a.结帐id ) as insure_settle_time,
+		        a.应收金额 as rec_amount,
+		        a.医嘱序号 as morder_code
+			from 住院费用记录 a
+			left join 人员表 b on b.姓名 = a.开单人
+		   ) t where rownum <=1
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectTop50"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+				a.id as sick_fee_flow_code,
+				a.病人id || '_' ||a.主页id as in_hos_flow_code,
+				a.病人id as sickman_code,
+				b.id as doctor_code,
+				a.开单部门id as dept_code,
+				'' as zmap_dept_code,
+				a.登记时间 as fee_date,
+				'' as fee_source_code,
+				case when a.收费类别 in ('5','6','7') then -1 else 1 end fee_class_code,
+				a.收费类别 as fee_type_code,
+				a.收费细目id as fee_item_code,
+				'' as zmap_fee_item_code,
+				'' as "size",
+				a.计算单位 as unit,
+				a.数次 as num,
+				a.标准单价 as unit_price,
+				'0' as dis_price,
+				'0' as dis_ratio,
+				a.实收金额 as amount,
+				'' as phar_code,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				a.结帐id  as settle_acct_code,
+				'' as settle_type_code,
+				case when  not exists(select 1 from 保险结算记录 c where c.记录id= a.结帐id) then '0' else '1' end as is_insure_settle,
+				a.收入项目id as acct_item_code,
+				(select d.收费时间 from 病人结帐记录 d where d.id = a.结帐id ) as settle_charge_time,
+		        (select e.结算时间 from 保险结算记录 e where e.记录id= a.结帐id ) as insure_settle_time,
+		        a.应收金额 as rec_amount,
+		        a.医嘱序号 as morder_code
+			from 住院费用记录 a
+			left join 人员表 b on b.姓名 = a.开单人
+		   ) t where rownum <=50
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectCharge"  resultMap="baseMap">
+		<![CDATA[
+		    select
+				a.id as sick_fee_flow_code,
+				a.病人id || '_' ||a.主页id as in_hos_flow_code,
+				a.病人id as sickman_code,
+				b.id as doctor_code,
+				a.开单部门id as dept_code,
+				'' as zmap_dept_code,
+				a.登记时间 as fee_date,
+				'' as fee_source_code,
+				case when a.收费类别 in ('5','6','7') then -1 else 1 end fee_class_code,
+				a.收费类别 as fee_type_code,
+				a.收费细目id as fee_item_code,
+				'' as zmap_fee_item_code,
+				'' as "size",
+				a.计算单位 as unit,
+				a.数次 as num,
+				a.标准单价 as unit_price,
+				'0' as dis_price,
+				'0' as dis_ratio,
+				a.实收金额 as amount,
+				'' as phar_code,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				a.结帐id  as settle_acct_code,
+				'' as settle_type_code,
+				case when  not exists(select 1 from 保险结算记录 c where c.记录id= a.结帐id) then '0' else '1' end as is_insure_settle,
+				a.收入项目id as acct_item_code,
+				(select d.收费时间 from 病人结帐记录 d where d.id = a.结帐id ) as settle_charge_time,
+		        (select e.结算时间 from 保险结算记录 e where e.记录id= a.结帐id ) as insure_settle_time,
+		        a.应收金额 as rec_amount,
+		        a.医嘱序号 as morder_code
+			from 住院费用记录 a
+			left join 人员表 b on b.姓名 = a.开单人
+		]]>
+	</select>
+	<!-- 多个参数的形式，需要使用map来存储-->
+    <select id="selectByPagination" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        <![CDATA[
+        select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+				a.id as sick_fee_flow_code,
+				a.病人id || '_' ||a.主页id as in_hos_flow_code,
+				a.病人id as sickman_code,
+				b.id as doctor_code,
+				a.开单部门id as dept_code,
+				'' as zmap_dept_code,
+				a.登记时间 as fee_date,
+				'' as fee_source_code,
+				case when a.收费类别 in ('5','6','7') then -1 else 1 end fee_class_code,
+				a.收费类别 as fee_type_code,
+				a.收费细目id as fee_item_code,
+				'' as zmap_fee_item_code,
+				'' as "size",
+				a.计算单位 as unit,
+				a.数次 as num,
+				a.标准单价 as unit_price,
+				'0' as dis_price,
+				'0' as dis_ratio,
+				a.实收金额 as amount,
+				'' as phar_code,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				a.结帐id  as settle_acct_code,
+				'' as settle_type_code,
+				case when  not exists(select 1 from 保险结算记录 c where c.记录id= a.结帐id) then '0' else '1' end as is_insure_settle,
+				a.收入项目id as acct_item_code,
+				(select d.收费时间 from 病人结帐记录 d where d.id = a.结帐id ) as settle_charge_time,
+		        (select e.结算时间 from 保险结算记录 e where e.记录id= a.结帐id ) as insure_settle_time,
+		        a.应收金额 as rec_amount,
+		        a.医嘱序号 as morder_code
+			from 住院费用记录 a
+			left join 人员表 b on b.姓名 = a.开单人
+		   ) t where rownum <= ${curPageRow}
+		 ) where rn > ${prePageRow}
+		 ]]>
+    </select>
+    <select id="selectByPaginationWithDateTime" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        	<![CDATA[
+        	select * from (
+			  select t.*,rownum rn from
+			  (
+			    select
+					a.id as sick_fee_flow_code,
+					a.病人id || '_' ||a.主页id as in_hos_flow_code,
+					a.病人id as sickman_code,
+					b.id as doctor_code,
+					a.开单部门id as dept_code,
+					'' as zmap_dept_code,
+					a.登记时间 as fee_date,
+					'' as fee_source_code,
+					case when a.收费类别 in ('5','6','7') then -1 else 1 end fee_class_code,
+					a.收费类别 as fee_type_code,
+					a.收费细目id as fee_item_code,
+					'' as zmap_fee_item_code,
+					'' as "size",
+					a.计算单位 as unit,
+					a.数次 as num,
+					a.标准单价 as unit_price,
+					'0' as dis_price,
+					'0' as dis_ratio,
+					a.实收金额 as amount,
+					'' as phar_code,
+					'' as sub_hospital_code,
+					'2' as hospital_code,
+					a.结帐id  as settle_acct_code,
+					'' as settle_type_code,
+					case when  not exists(select 1 from 保险结算记录 c where c.记录id= a.结帐id) then '0' else '1' end as is_insure_settle,
+					a.收入项目id as acct_item_code,
+					(select d.收费时间 from 病人结帐记录 d where d.id = a.结帐id ) as settle_charge_time,
+			        (select e.结算时间 from 保险结算记录 e where e.记录id= a.结帐id ) as insure_settle_time,
+			        a.应收金额 as rec_amount,
+			        a.医嘱序号 as morder_code
+				from 住院费用记录 a
+				left join 人员表 b on b.姓名 = a.开单人
+			    where to_char(a.登记时间,'yyyy-MM-dd') = #{curDate}
+			   ) t where rownum <= ${curPageRow}
+			 ) where rn > ${prePageRow}
+			 ]]>
+    </select>
+    <select id="countNum" resultType="int">
+        <![CDATA[
+        select count(*) from 住院费用记录
+        ]]>
+    </select>
+    <select id="countNumWithDate" parameterType="String" resultType="int">
+    	<![CDATA[
+        select count(*) from 住院费用记录  where to_char(登记时间,'yyyy-MM-dd') = #{curDate}
+        ]]>
+    </select>
+</mapper>

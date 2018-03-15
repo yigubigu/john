@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.zmap.clinic.mapper.ClinicsInfusionPersonMapper">
+      <resultMap type="com.zmap.zmap.clinic.model.ClinicsInfusionPersonModel" id="ClinicsInfusionMap">
+           <result column="personCount" property="personCount"/>
+           <result column="exec_dept_code" property="deptCode"/>
+           <result column="morder_doctor_code" property="doctorCode"/>
+           <result column="hospital_code" property="hospitalCode"/>
+      </resultMap>
+      
+      
+      <select id="selectPersonTimeByDateSum" parameterType="java.util.Map" resultMap="ClinicsInfusionMap">
+      select COUNT(DISTINCT reg_seq) as personCount
+      from zmap_c_m2_morder m
+      where morder_time between '${startTime}%' and '${endTime}%'
+      and m.treat_code in ('12619')
+      </select>
+      
+      
+      <select id="selectPersonTimeByDatefromClinics" parameterType="java.util.Map" resultMap="ClinicsInfusionMap">
+      select COUNT(DISTINCT reg_seq) as personCount
+      from zmap_c_m2_morder m
+      where morder_time between '${startTime}%' and '${endTime}%'
+      and m.treat_code in ('12619')
+      and exec_dept_code not in ('89','98','99','328','2068','2548','3030','8')
+      </select>
+      
+      
+      <select id="selectPersonTimeByDateFromEmergency" parameterType="java.util.Map" resultMap="ClinicsInfusionMap">
+      select COUNT(DISTINCT reg_seq) as personCount
+      from zmap_c_m2_morder m
+      where morder_time between '${startTime}%' and '${endTime}%'
+      and m.treat_code in ('12619')
+      and exec_dept_code  in ('89','98','99','328','2068','2548','3030','8')
+      </select>
+      
+      <select id="selectPersonTimeByDateFromDept" parameterType="java.util.Map" resultMap="ClinicsInfusionMap">
+      select m.exec_dept_code,COUNT(DISTINCT reg_seq) as personCount
+      from zmap_c_m2_morder m
+      where morder_time between '${startTime}%' and '${endTime}%'
+      and m.treat_code in ('12619')
+      group by m.exec_dept_code;
+      </select>
+      
+      <select id="selectPersonTimeByDateFromDoctor" parameterType="java.util.Map" resultMap="ClinicsInfusionMap">
+      select morder_doctor_code,COUNT(DISTINCT reg_seq) as personCount,exec_dept_code 
+      from zmap_c_m2_morder
+      where morder_time between '${startTime}%' and '${endTime}%'
+      and treat_code in ('12619')
+      and exec_dept_code = #{deptCode,jdbcType=VARCHAR}
+      GROUP BY morder_doctor_code;
+      </select>
+
+</mapper>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.his.hospitalize.mapper.HisHospitalizeHM1HospitalizeSyncMapper">
+	<resultMap id="hospitalizeMap" type="com.zmap.his.hospitalize.model.HisHospitalizeHM1HospitalizeSyncModel">
+		<result column="in_hos_flow_code" property="inHosFlowCode" />
+		<result column="sickman_code" property="sickmanCode" />
+		<result column="sickman_name" property="sickmanName" />
+		<result column="sickman_type" property="sickmanType" />
+		<result column="birthday"  property="birthday" />
+		<result column="in_date" property="inDate" />
+		<result column="out_date" property="outDate" />
+		<result column="sick_area_code" property="sickAreaCode" />
+		<result column="sick_bed_code" property="sickBedCode" />
+		<result column="sick_room_code" property="sickRoomCode" />
+		<result column="resp_doctor_code" property="respDoctorCode" />
+		<result column="rec_doctor_code" property="recDoctorCode" />
+		<result column="iccard_code" property="iccardCode" />
+		<result column="sub_hospital_code" property="subHospitalCode" />
+		<result column="hospital_code" property="hospitalCode" />
+		<result column="resp_dept" property="respDept" />
+		<result column="rec_dept_code" property="recDeptCode" />
+		<result column="in_hos_source" property="inHosSource" />
+		<result column="in_icd" property="inIcd" />
+		<result column="in_icd_name" property="inIcdName" />
+		<result column="out_icd" property="outIcd" />
+		<result column="out_icd_name" property="outIcdName" />
+	</resultMap>
+	<select id="selectTop1"  resultMap="hospitalizeMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.病人id || '_' ||a.主页id as in_hos_flow_code,
+				a.病人id as sickman_code,
+				a.姓名 as sickman_name,
+				a.医疗付款方式 as sickman_type,
+				b.出生日期 as birthday,
+				a.入院日期 as in_date,
+				a.出院日期 as out_date,
+				a.入院病区id as sick_area_code,
+				a.入院病床 as sick_bed_code,
+				'' as sick_room_code,
+				(select c.id from 人员表 c where c.姓名 = a.住院医师) as resp_doctor_code,
+				(select d.id from 人员表 d where d.姓名 = a.门诊医师) as rec_doctor_code,
+				a.住院号 as iccard_code,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				a.入院科室id as resp_dept,
+				'' as rec_dept_code,
+				a.入院方式 as in_hos_source,
+				'' as in_icd,
+				'' as in_icd_name,
+				'' as out_icd,
+				'' as out_icd_name
+			from 病案主页 a
+			left join 病人信息 b on a.病人id = b.病人id
+		   ) t where rownum <=1
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectTop50"  resultMap="hospitalizeMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.病人id || '_' ||a.主页id as in_hos_flow_code,
+				a.病人id as sickman_code,
+				a.姓名 as sickman_name,
+				a.医疗付款方式 as sickman_type,
+				b.出生日期 as birthday,
+				a.入院日期 as in_date,
+				a.出院日期 as out_date,
+				a.入院病区id as sick_area_code,
+				a.入院病床 as sick_bed_code,
+				'' as sick_room_code,
+				(select c.id from 人员表 c where c.姓名 = a.住院医师) as resp_doctor_code,
+				(select d.id from 人员表 d where d.姓名 = a.门诊医师) as rec_doctor_code,
+				a.住院号 as iccard_code,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				a.入院科室id as resp_dept,
+				'' as rec_dept_code,
+				a.入院方式 as in_hos_source,
+				'' as in_icd,
+				'' as in_icd_name,
+				'' as out_icd,
+				'' as out_icd_name
+			from 病案主页 a
+			left join 病人信息 b on a.病人id = b.病人id
+		   ) t where rownum <=50
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectHospitalize"  resultMap="hospitalizeMap">
+		<![CDATA[
+		    select 
+				a.病人id || '_' ||a.主页id as in_hos_flow_code,
+				a.病人id as sickman_code,
+				a.姓名 as sickman_name,
+				a.医疗付款方式 as sickman_type,
+				b.出生日期 as birthday,
+				a.入院日期 as in_date,
+				a.出院日期 as out_date,
+				a.入院病区id as sick_area_code,
+				a.入院病床 as sick_bed_code,
+				'' as sick_room_code,
+				(select c.id from 人员表 c where c.姓名 = a.住院医师) as resp_doctor_code,
+				(select d.id from 人员表 d where d.姓名 = a.门诊医师) as rec_doctor_code,
+				a.住院号 as iccard_code,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				a.入院科室id as resp_dept,
+				'' as rec_dept_code,
+				a.入院方式 as in_hos_source,
+				'' as in_icd,
+				'' as in_icd_name,
+				'' as out_icd,
+				'' as out_icd_name
+			from 病案主页 a
+			left join 病人信息 b on a.病人id = b.病人id
+		]]>
+	</select>
+	<!-- 多个参数的形式，需要使用map来存储-->
+    <select id="selectByPagination" parameterType="map" resultMap="hospitalizeMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        <![CDATA[
+        select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.病人id || '_' ||a.主页id as in_hos_flow_code,
+				a.病人id as sickman_code,
+				a.姓名 as sickman_name,
+				a.医疗付款方式 as sickman_type,
+				b.出生日期 as birthday,
+				a.入院日期 as in_date,
+				a.出院日期 as out_date,
+				a.入院病区id as sick_area_code,
+				a.入院病床 as sick_bed_code,
+				'' as sick_room_code,
+				(select c.id from 人员表 c where c.姓名 = a.住院医师) as resp_doctor_code,
+				(select d.id from 人员表 d where d.姓名 = a.门诊医师) as rec_doctor_code,
+				a.住院号 as iccard_code,
+				'' as sub_hospital_code,
+				'2' as hospital_code,
+				a.入院科室id as resp_dept,
+				'' as rec_dept_code,
+				a.入院方式 as in_hos_source,
+				'' as in_icd,
+				'' as in_icd_name,
+				'' as out_icd,
+				'' as out_icd_name
+			from 病案主页 a
+			left join 病人信息 b on a.病人id = b.病人id
+		   ) t where rownum <= ${curPageRow}
+		 ) where rn > ${prePageRow}
+		 ]]>
+    </select>
+    <select id="selectByPaginationWithDateTime" parameterType="map" resultMap="hospitalizeMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        	<![CDATA[
+        	select * from (
+			  select t.*,rownum rn from
+			  (
+			    select 
+					a.病人id || '_' ||a.主页id as in_hos_flow_code,
+					a.病人id as sickman_code,
+					a.姓名 as sickman_name,
+					a.医疗付款方式 as sickman_type,
+					b.出生日期 as birthday,
+					a.入院日期 as in_date,
+					a.出院日期 as out_date,
+					a.入院病区id as sick_area_code,
+					a.入院病床 as sick_bed_code,
+					'' as sick_room_code,
+					(select c.id from 人员表 c where c.姓名 = a.住院医师) as resp_doctor_code,
+					(select d.id from 人员表 d where d.姓名 = a.门诊医师) as rec_doctor_code,
+					a.住院号 as iccard_code,
+					'' as sub_hospital_code,
+					'2' as hospital_code,
+					a.入院科室id as resp_dept,
+					'' as rec_dept_code,
+					a.入院方式 as in_hos_source,
+					'' as in_icd,
+					'' as in_icd_name,
+					'' as out_icd,
+					'' as out_icd_name
+				from 病案主页 a
+				left join 病人信息 b on a.病人id = b.病人id
+			    where to_char(a.入院日期,'yyyy-MM-dd') = #{curDate}
+			   ) t where rownum <= ${curPageRow}
+			 ) where rn > ${prePageRow}
+			 ]]>
+    </select>
+    <select id="countNum" resultType="int">
+        <![CDATA[
+        select count(*) from 病案主页
+        ]]>
+    </select>
+    <select id="countNumWithDate" parameterType="String" resultType="int">
+    	<![CDATA[
+        select count(*) from 病案主页   where to_char(入院日期,'yyyy-MM-dd') = #{curDate}
+        ]]>
+    </select>
+</mapper>

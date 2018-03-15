@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <package name="com.zmap.zmap.clinic.model"/>
+        <package name="com.zmap.zmap.hospitalize.model"/>
+        <package name="com.zmap.zmap.framework.base.model"/>
+    </typeAliases>
+    <mappers>
+        <mapper resource="com/zmap/zmap/clinic/mapper/ZmapClinicCM1SyncMapper.xml"/>        
+        <mapper resource="com/zmap/zmap/clinic/mapper/ZmapClinicCM2DiagnoseSyncMapper.xml"/>        
+        <mapper resource="com/zmap/zmap/clinic/mapper/ZmapClinicCM2ChargeSyncMapper.xml"/>        
+        <mapper resource="com/zmap/zmap/clinic/mapper/ZmapClinicCM2DrugUseSyncMapper.xml"/>        
+        <mapper resource="com/zmap/zmap/clinic/mapper/ZmapClinicCM2ExamineSyncMapper.xml"/>        
+        <mapper resource="com/zmap/zmap/clinic/mapper/ZmapClinicCM2MOrderSyncMapper.xml"/>   
+        <mapper resource="com/zmap/zmap/clinic/mapper/JbTransClinicSyncMapper.xml"/>        
+        <mapper resource="com/zmap/zmap/clinic/mapper/PatientRegistrationMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/base/mapper/ZmapRDoctorMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/base/mapper/ZmapRPatientMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/base/mapper/ZmapLAcctItemMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/base/mapper/ZmapLExamineMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/base/mapper/ZmapLFeeItemMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/base/mapper/ZmapLOperationMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/ZmapHospitalizeHM1HospitalizeSyncMapper.xml"/> 
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/ZmapHospitalizeHM2ChargeSyncMapper.xml"/>     
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/ZmapHospitalizeHM2DrugUseSyncMapper.xml"/>     
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/ZmapHospitalizeHM2ExamineSyncMapper.xml"/>     
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/ZmapHospitalizeHM2OperationSyncMapper.xml"/>     
+        <mapper resource="com/zmap/zmap/framework/base/mapper/ZmapRDeptMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/base/mapper/ZmapLFeeItemMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/income/mapper/DrugIncomeMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/income/mapper/MaterialIncomeMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/income/mapper/HospitalizeIncomeMapper.xml"/>  
+        <mapper resource="com/zmap/zmap/framework/income/mapper/ClinicsIncomeMapper.xml"/>
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/OutHospitalPersonMapper.xml"/> 
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/InHospitalPersonMapper.xml"/> 
+        <mapper resource="com/zmap/zmap/clinic/mapper/ClinicsDrugRatioMapper.xml"/>
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/HospitalizeDrugRatioMapper.xml"/>
+        <mapper resource="com/zmap/zmap/clinic/mapper/EmergencyVisitsMapper.xml"/>
+        <mapper resource="com/zmap/zmap/clinic/mapper/ServiceNumberMapper.xml"/>
+        <mapper resource="com/zmap/zmap/framework/income/mapper/OtherIncomeMapper.xml"/>
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/HospitalizeNumberByDay.xml"/>
+        <mapper resource="com/zmap/zmap/framework/hospitalize/mapper/AdmittedRateMapper.xml"/>
+        <mapper resource="com/zmap/zmap/clinic/mapper/ClinicsInfusionPersonMapper.xml"/>
+        <mapper resource="com/zmap/zmap/hospitalize/mapper/HospitalizeHighOwePersonMapper.xml"/>
+    </mappers>
+</configuration>

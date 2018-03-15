@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.his.clinic.mapper.HisClinicCM1SyncMapper">
+	<resultMap id="clinicMap" type="com.zmap.his.clinic.model.HisClinicCM1SyncModel">
+		<result column="reg_code" property="regCode" />
+		<result column="reg_time" property="regTime" />
+		<result column="patient_code" property="patientCode" />
+		<result column="doctor_code"  property="doctorCode" />
+		<result column="dept_code" property="deptCode" />
+		<result column="zmap_dept_code" property="zmapDeptCode" />
+		<result column="org_code" property="orgCode" />
+		<result column="iccard_code" property="iccardCode" />
+		<result column="clinic_type" property="clinicType" />
+		<result column="hospital_code" property="hospitalCode" />
+		<result column="sub_hospital_code" property="subHospitalCode" />
+		<result column="is_trans" property="isTrans" />
+		<result column="trans_reg_type" property="transRegType" />
+		<result column="trans_dept_code" property="transDeptCode" />
+		<result column="trans_doctor_code" property="transDoctorCode" />
+		<result column="trans_status" property="transStatus" />
+	</resultMap>
+	<select id="selectTop1"  resultMap="clinicMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+		      a.ID as reg_code,
+		      a.接收时间 as reg_time,
+		      a.病人ID as patient_code,
+		      case when (b.id is null) then '999' else to_char(b.id) end as doctor_code,
+		      a.执行部门ID as dept_code,
+		      '' as zmap_dept_code,
+		      '' as org_code,
+		      a.门诊号 as iccard_code,
+		      case when a.急诊=0 then '1'  when a.急诊=1 then '2' end  as clinic_type,
+		      '2' as hospital_code,
+		      '' as sub_hospital_code,
+		      case when a.转诊科室id is not null then '1' else '0' end as is_trans,
+	          a.转诊号别 as trans_reg_type,
+	          a.转诊科室id as trans_dept_code,
+	          (select b.id from 人员表 c where c.姓名 = a.转诊医生 ) as trans_doctor_code,
+	          a.转诊状态 as trans_status
+		    from 病人挂号记录 a
+        	left join 人员表 b on a.执行人 = b.姓名
+		   ) t where rownum <=1
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectTop50"  resultMap="clinicMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+		      a.ID as reg_code,
+		      a.接收时间 as reg_time,
+		      a.病人ID as patient_code,
+		      case when (b.id is null) then '999' else to_char(b.id) end as doctor_code,
+		      a.执行部门ID as dept_code,
+		      '' as zmap_dept_code,
+		      '' as org_code,
+		      a.门诊号 as iccard_code,
+		      case when a.急诊=0 then '1'  when a.急诊=1 then '2' end  as clinic_type,
+		      '2' as hospital_code,
+		      '' as sub_hospital_code,
+		      case when a.转诊科室id is not null then '1' else '0' end as is_trans,
+	          a.转诊号别 as trans_reg_type,
+	          a.转诊科室id as trans_dept_code,
+	          (select b.id from 人员表 c where c.姓名 = a.转诊医生 ) as trans_doctor_code,
+	          a.转诊状态 as trans_status
+		    from 病人挂号记录 a
+        	left join 人员表 b on a.执行人 = b.姓名
+		   ) t where rownum <=50
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectCinic"  resultMap="clinicMap">
+		<![CDATA[
+		    select
+		      a.ID as reg_code,
+		      a.接收时间 as reg_time,
+		      a.病人ID as patient_code,
+		      case when (b.id is null) then '999' else to_char(b.id) end as doctor_code,
+		      a.执行部门ID as dept_code,
+		      '' as zmap_dept_code,
+		      '' as org_code,
+		      a.门诊号 as iccard_code,
+		      case when a.急诊=0 then '1'  when a.急诊=1 then '2' end  as clinic_type,
+		      '2' as hospital_code,
+		      '' as sub_hospital_code,
+		      case when a.转诊科室id is not null then '1' else '0' end as is_trans,
+	          a.转诊号别 as trans_reg_type,
+	          a.转诊科室id as trans_dept_code,
+	          (select b.id from 人员表 c where c.姓名 = a.转诊医生 ) as trans_doctor_code,
+	          a.转诊状态 as trans_status
+		    from 病人挂号记录 a
+        	left join 人员表 b on a.执行人 = b.姓名
+		]]>
+	</select>
+	<!-- 多个参数的形式，需要使用map来存储-->
+    <select id="selectByPagination" parameterType="map" resultMap="clinicMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        <![CDATA[
+        select * from (
+		  select t.*,rownum rn from
+		  (
+		    select
+		      a.ID as reg_code,
+		      a.接收时间 as reg_time,
+		      a.病人ID as patient_code,
+		      case when (b.id is null) then '999' else to_char(b.id) end as doctor_code,
+		      a.执行部门ID as dept_code,
+		      '' as zmap_dept_code,
+		      '' as org_code,
+		      a.门诊号 as iccard_code,
+		      case when a.急诊=0 then '1'  when a.急诊=1 then '2' end  as clinic_type,
+		      '2' as hospital_code,
+		      '' as sub_hospital_code,
+		      case when a.转诊科室id is not null then '1' else '0' end as is_trans,
+	          a.转诊号别 as trans_reg_type,
+	          a.转诊科室id as trans_dept_code,
+	          (select b.id from 人员表 c where c.姓名 = a.转诊医生 ) as trans_doctor_code,
+	          a.转诊状态 as trans_status
+		    from 病人挂号记录 a
+        	left join 人员表 b on a.执行人 = b.姓名
+		   ) t where rownum <= ${curPageRow}
+		 ) where rn > ${prePageRow}
+		 ]]>
+    </select>
+    <select id="selectByPaginationWithDateTime" parameterType="map" resultMap="clinicMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        	<![CDATA[
+        	select * from (
+			  select t.*,rownum rn from
+			  (
+			    select
+			      a.ID as reg_code,
+			      a.接收时间 as reg_time,
+			      a.病人ID as patient_code,
+			      case when (b.id is null) then '999' else to_char(b.id) end as doctor_code,
+			      a.执行部门ID as dept_code,
+			      '' as zmap_dept_code,
+			      '' as org_code,
+			      a.门诊号 as iccard_code,
+			      case when a.急诊=0 then '1'  when a.急诊=1 then '2' end  as clinic_type,
+			      '2' as hospital_code,
+			      '' as sub_hospital_code,
+			      case when a.转诊科室id is not null then '1' else '0' end as is_trans,
+		          a.转诊号别 as trans_reg_type,
+		          a.转诊科室id as trans_dept_code,
+		          (select b.id from 人员表 c where c.姓名 = a.转诊医生 ) as trans_doctor_code,
+		          a.转诊状态 as trans_status
+			    from 病人挂号记录 a
+	        	left join 人员表 b on a.执行人 = b.姓名
+			    where to_char(a.接收时间,'yyyy-MM-dd') = #{curDate}
+			   ) t where rownum <= ${curPageRow}
+			 ) where rn > ${prePageRow}
+			 ]]>
+    </select>
+    <select id="countNum" resultType="int">
+        <![CDATA[
+        select count(*) from 病人挂号记录
+        ]]>
+    </select>
+    <select id="countNumWithDate" parameterType="String" resultType="int">
+    	<![CDATA[
+        select count(*) from 病人挂号记录  where to_char(接收时间,'yyyy-MM-dd') = #{curDate}
+        ]]>
+    </select>
+</mapper>

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zmap.his.clinic.mapper.HisClinicCM2MOrderSyncMapper">
+	<resultMap id="baseMap" type="com.zmap.his.clinic.model.HisClinicCM2MOrderSyncModel">
+	    <result column="morder_code" jdbcType="VARCHAR" property="morderCode" />
+	    <result column="related_code" jdbcType="VARCHAR" property="relatedCode" />
+	    <result column="patient_code" jdbcType="VARCHAR" property="patientCode" />
+	    <result column="patient_name" jdbcType="VARCHAR" property="patientName" />
+	    <result column="mhome_page_code" jdbcType="VARCHAR" property="mhomePageCode" />
+	    <result column="reg_seq" jdbcType="VARCHAR" property="regSeq" />
+	    <result column="dept_code" jdbcType="VARCHAR" property="deptCode" />
+	    <result column="morder_status" jdbcType="VARCHAR" property="morderStatus" />
+	    <result column="is_valid" jdbcType="VARCHAR" property="isValid" />
+	    <result column="treat_type_code" jdbcType="VARCHAR" property="treatTypeCode" />
+	    <result column="treat_code" jdbcType="VARCHAR" property="treatCode" />
+	    <result column="treat_body_part" jdbcType="VARCHAR" property="treatBodyPart" />
+	    <result column="fee_item_code" jdbcType="VARCHAR" property="feeItemCode" />
+	    <result column="days" jdbcType="VARCHAR" property="days" />
+	    <result column="single_use_volumn" jdbcType="VARCHAR" property="singleUseVolumn" />
+	    <result column="total_use_volumn" jdbcType="VARCHAR" property="totalUseVolumn" />
+	    <result column="morder_content" jdbcType="VARCHAR" property="morderContent" />
+	    <result column="morder_special" jdbcType="VARCHAR" property="morderSpecial" />
+	    <result column="skin_test_result" jdbcType="VARCHAR" property="skinTestResult" />
+	    <result column="exec_dept_code" jdbcType="VARCHAR" property="execDeptCode" />
+	    <result column="exec_freq" jdbcType="VARCHAR" property="execFreq" />
+	    <result column="freq_times" jdbcType="VARCHAR" property="freqTimes" />
+	    <result column="freq_interval" jdbcType="VARCHAR" property="freqInterval" />
+	    <result column="interval_time_unit" jdbcType="VARCHAR" property="intervalTimeUnit" />
+	    <result column="exec_schedule" jdbcType="VARCHAR" property="execSchedule" />
+	    <result column="exec_type_code" jdbcType="VARCHAR" property="execTypeCode" />
+	    <result column="exec_mark" jdbcType="VARCHAR" property="execMark" />
+	    <result column="exec_begin_time" jdbcType="VARCHAR" property="execBeginTime" />
+	    <result column="exec_end_time" jdbcType="VARCHAR" property="execEndTime" />
+	    <result column="last_exec_time" jdbcType="VARCHAR" property="lastExecTime" />
+	    <result column="morder_dept_code" jdbcType="VARCHAR" property="morderDeptCode" />
+	    <result column="morder_doctor_code" jdbcType="VARCHAR" property="morderDoctorCode" />
+	    <result column="morder_time" jdbcType="VARCHAR" property="morderTime" />
+	    <result column="proofread_nurse" jdbcType="VARCHAR" property="proofreadNurse" />
+	    <result column="proofread_time" jdbcType="VARCHAR" property="proofreadTime" />
+	    <result column="stop_doctor_code" jdbcType="VARCHAR" property="stopDoctorCode" />
+	    <result column="stop_time" jdbcType="VARCHAR" property="stopTime" />
+	    <result column="confirmed_stop_time" jdbcType="VARCHAR" property="confirmedStopTime" />
+	    <result column="confirmed_stop_nurse" jdbcType="VARCHAR" property="confirmedStopNurse" />
+	    <result column="check_mark" jdbcType="VARCHAR" property="checkMark" />
+	    <result column="check_status" jdbcType="VARCHAR" property="checkStatus" />
+	    <result column="first_use_volumn" jdbcType="VARCHAR" property="firstUseVolumn" />
+	    <result column="over_use_volumn" jdbcType="VARCHAR" property="overUseVolumn" />
+	    <result column="combined_item_code" jdbcType="VARCHAR" property="combinedItemCode" />
+	    <result column="fomula_code" jdbcType="VARCHAR" property="fomulaCode" />
+	    <result column="phar_check_mark" jdbcType="VARCHAR" property="pharCheckMark" />
+	    <result column="phar_check_time" jdbcType="VARCHAR" property="pharCheckTime" />
+	    <result column="charge_code" jdbcType="VARCHAR" property="chargeCode" />
+	</resultMap>
+	<select id="selectTop1"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as morder_code,
+				a.相关id as related_code,
+				a.病人id as patient_code,
+				a.姓名 as patient_name,
+				a.病人id as mhome_page_code,
+				a.挂号单 as reg_seq,
+				a.病人科室id as dept_code,
+				a.医嘱状态 as morder_status,
+				a.医嘱期效 as is_valid,
+				a.诊疗类别 as treat_type_code,
+				a.诊疗项目id as treat_code,
+				a.标本部位 as treat_body_part,
+				a.收费细目id as fee_item_code,
+				a.天数 as days,
+				a.单次用量 as single_use_volumn,
+				a.总给予量 as total_use_volumn,
+				a.医嘱内容 as morder_content,
+				a.医生嘱托 as morder_special,
+				a.皮试结果 as skin_test_result,
+				a.执行科室id as exec_dept_code,
+				a.执行频次 as exec_freq,
+				a.频率次数 as freq_times,
+				a.频率间隔 as freq_interval,
+				a.间隔单位 as interval_time_unit,
+				a.执行时间方案 as exec_schedule,
+				a.执行性质 as exec_type_code,
+				a.执行标记 as exec_mark,
+				a.开始执行时间 as exec_begin_time,
+				a.执行终止时间 as exec_end_time,
+				a.上次执行时间 as last_exec_time,
+				a.开嘱科室id as morder_dept_code,
+				(select b.id from 人员表 b where a.开嘱医生 = b.姓名) as morder_doctor_code,
+				a.开嘱时间 as morder_time,
+				a.校对护士 as proofread_nurse,
+				a.校对时间 as proofread_time,
+				(select c.id from 人员表 c where a.停嘱医生 = c.姓名) as stop_doctor_code,
+				a.停嘱时间 as stop_time,
+				a.确认停嘱时间 as confirmed_stop_time,
+				a.确认停嘱护士 as confirmed_stop_nurse,
+				a.审核标记 as check_mark,
+				a.审核状态 as check_status,
+				a.首次用量 as first_use_volumn,
+				a.超量说明 as over_use_volumn,
+				a.组合项目ID as combined_item_code,
+				a.配方ID as fomula_code,
+				a.药师审核标志 as phar_check_mark,
+				a.药师审核时间 as phar_check_time,
+				'' as charge_code
+			from 病人医嘱记录 a
+		   ) t where rownum <=1
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectTop50"  resultMap="baseMap">
+		<![CDATA[
+		select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as morder_code,
+				a.相关id as related_code,
+				a.病人id as patient_code,
+				a.姓名 as patient_name,
+				a.病人id as mhome_page_code,
+				a.挂号单 as reg_seq,
+				a.病人科室id as dept_code,
+				a.医嘱状态 as morder_status,
+				a.医嘱期效 as is_valid,
+				a.诊疗类别 as treat_type_code,
+				a.诊疗项目id as treat_code,
+				a.标本部位 as treat_body_part,
+				a.收费细目id as fee_item_code,
+				a.天数 as days,
+				a.单次用量 as single_use_volumn,
+				a.总给予量 as total_use_volumn,
+				a.医嘱内容 as morder_content,
+				a.医生嘱托 as morder_special,
+				a.皮试结果 as skin_test_result,
+				a.执行科室id as exec_dept_code,
+				a.执行频次 as exec_freq,
+				a.频率次数 as freq_times,
+				a.频率间隔 as freq_interval,
+				a.间隔单位 as interval_time_unit,
+				a.执行时间方案 as exec_schedule,
+				a.执行性质 as exec_type_code,
+				a.执行标记 as exec_mark,
+				a.开始执行时间 as exec_begin_time,
+				a.执行终止时间 as exec_end_time,
+				a.上次执行时间 as last_exec_time,
+				a.开嘱科室id as morder_dept_code,
+				(select b.id from 人员表 b where a.开嘱医生 = b.姓名) as morder_doctor_code,
+				a.开嘱时间 as morder_time,
+				a.校对护士 as proofread_nurse,
+				a.校对时间 as proofread_time,
+				(select c.id from 人员表 c where a.停嘱医生 = c.姓名) as stop_doctor_code,
+				a.停嘱时间 as stop_time,
+				a.确认停嘱时间 as confirmed_stop_time,
+				a.确认停嘱护士 as confirmed_stop_nurse,
+				a.审核标记 as check_mark,
+				a.审核状态 as check_status,
+				a.首次用量 as first_use_volumn,
+				a.超量说明 as over_use_volumn,
+				a.组合项目ID as combined_item_code,
+				a.配方ID as fomula_code,
+				a.药师审核标志 as phar_check_mark,
+				a.药师审核时间 as phar_check_time,
+				'' as charge_code
+			from 病人医嘱记录 a
+		   ) t where rownum <=50
+		 ) where rn>=1
+		 ]]>
+	</select>
+	<select id="selectRecord"  resultMap="baseMap">
+		<![CDATA[
+		    select 
+				a.ID as morder_code,
+				a.相关id as related_code,
+				a.病人id as patient_code,
+				a.姓名 as patient_name,
+				a.病人id as mhome_page_code,
+				a.挂号单 as reg_seq,
+				a.病人科室id as dept_code,
+				a.医嘱状态 as morder_status,
+				a.医嘱期效 as is_valid,
+				a.诊疗类别 as treat_type_code,
+				a.诊疗项目id as treat_code,
+				a.标本部位 as treat_body_part,
+				a.收费细目id as fee_item_code,
+				a.天数 as days,
+				a.单次用量 as single_use_volumn,
+				a.总给予量 as total_use_volumn,
+				a.医嘱内容 as morder_content,
+				a.医生嘱托 as morder_special,
+				a.皮试结果 as skin_test_result,
+				a.执行科室id as exec_dept_code,
+				a.执行频次 as exec_freq,
+				a.频率次数 as freq_times,
+				a.频率间隔 as freq_interval,
+				a.间隔单位 as interval_time_unit,
+				a.执行时间方案 as exec_schedule,
+				a.执行性质 as exec_type_code,
+				a.执行标记 as exec_mark,
+				a.开始执行时间 as exec_begin_time,
+				a.执行终止时间 as exec_end_time,
+				a.上次执行时间 as last_exec_time,
+				a.开嘱科室id as morder_dept_code,
+				(select b.id from 人员表 b where a.开嘱医生 = b.姓名) as morder_doctor_code,
+				a.开嘱时间 as morder_time,
+				a.校对护士 as proofread_nurse,
+				a.校对时间 as proofread_time,
+				(select c.id from 人员表 c where a.停嘱医生 = c.姓名) as stop_doctor_code,
+				a.停嘱时间 as stop_time,
+				a.确认停嘱时间 as confirmed_stop_time,
+				a.确认停嘱护士 as confirmed_stop_nurse,
+				a.审核标记 as check_mark,
+				a.审核状态 as check_status,
+				a.首次用量 as first_use_volumn,
+				a.超量说明 as over_use_volumn,
+				a.组合项目ID as combined_item_code,
+				a.配方ID as fomula_code,
+				a.药师审核标志 as phar_check_mark,
+				a.药师审核时间 as phar_check_time,
+				'' as charge_code
+			from 病人医嘱记录 a
+		]]>
+	</select>
+	<!-- 多个参数的形式，需要使用map来存储-->
+    <select id="selectByPagination" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        <![CDATA[
+        select * from (
+		  select t.*,rownum rn from
+		  (
+		    select 
+				a.ID as morder_code,
+				a.相关id as related_code,
+				a.病人id as patient_code,
+				a.姓名 as patient_name,
+				a.病人id as mhome_page_code,
+				a.挂号单 as reg_seq,
+				a.病人科室id as dept_code,
+				a.医嘱状态 as morder_status,
+				a.医嘱期效 as is_valid,
+				a.诊疗类别 as treat_type_code,
+				a.诊疗项目id as treat_code,
+				a.标本部位 as treat_body_part,
+				a.收费细目id as fee_item_code,
+				a.天数 as days,
+				a.单次用量 as single_use_volumn,
+				a.总给予量 as total_use_volumn,
+				a.医嘱内容 as morder_content,
+				a.医生嘱托 as morder_special,
+				a.皮试结果 as skin_test_result,
+				a.执行科室id as exec_dept_code,
+				a.执行频次 as exec_freq,
+				a.频率次数 as freq_times,
+				a.频率间隔 as freq_interval,
+				a.间隔单位 as interval_time_unit,
+				a.执行时间方案 as exec_schedule,
+				a.执行性质 as exec_type_code,
+				a.执行标记 as exec_mark,
+				a.开始执行时间 as exec_begin_time,
+				a.执行终止时间 as exec_end_time,
+				a.上次执行时间 as last_exec_time,
+				a.开嘱科室id as morder_dept_code,
+				(select b.id from 人员表 b where a.开嘱医生 = b.姓名) as morder_doctor_code,
+				a.开嘱时间 as morder_time,
+				a.校对护士 as proofread_nurse,
+				a.校对时间 as proofread_time,
+				(select c.id from 人员表 c where a.停嘱医生 = c.姓名) as stop_doctor_code,
+				a.停嘱时间 as stop_time,
+				a.确认停嘱时间 as confirmed_stop_time,
+				a.确认停嘱护士 as confirmed_stop_nurse,
+				a.审核标记 as check_mark,
+				a.审核状态 as check_status,
+				a.首次用量 as first_use_volumn,
+				a.超量说明 as over_use_volumn,
+				a.组合项目ID as combined_item_code,
+				a.配方ID as fomula_code,
+				a.药师审核标志 as phar_check_mark,
+				a.药师审核时间 as phar_check_time,
+				'' as charge_code
+			from 病人医嘱记录 a
+		   ) t where rownum <= ${curPageRow}
+		 ) where rn > ${prePageRow}
+		 ]]>
+    </select>
+    <select id="selectByPaginationWithDateTime" parameterType="map" resultMap="baseMap">
+        <!-- 只要是#{}这种形式的，都会以？形式替代，对应字符串形式，都会加上引号-->
+        <!-- 只要是${}这种形式的，不会用？形式替代，传过来什么，就什么替代-->
+        <!-- curPageRow = pagesize*pagenum, prePageRow = pagesize*(pagenum-1)-->
+        	<![CDATA[
+        	select * from (
+			  select t.*,rownum rn from
+			  (
+			    select 
+					a.ID as morder_code,
+					a.相关id as related_code,
+					a.病人id as patient_code,
+					a.姓名 as patient_name,
+					a.病人id as mhome_page_code,
+					a.挂号单 as reg_seq,
+					a.病人科室id as dept_code,
+					a.医嘱状态 as morder_status,
+					a.医嘱期效 as is_valid,
+					a.诊疗类别 as treat_type_code,
+					a.诊疗项目id as treat_code,
+					a.标本部位 as treat_body_part,
+					a.收费细目id as fee_item_code,
+					a.天数 as days,
+					a.单次用量 as single_use_volumn,
+					a.总给予量 as total_use_volumn,
+					a.医嘱内容 as morder_content,
+					a.医生嘱托 as morder_special,
+					a.皮试结果 as skin_test_result,
+					a.执行科室id as exec_dept_code,
+					a.执行频次 as exec_freq,
+					a.频率次数 as freq_times,
+					a.频率间隔 as freq_interval,
+					a.间隔单位 as interval_time_unit,
+					a.执行时间方案 as exec_schedule,
+					a.执行性质 as exec_type_code,
+					a.执行标记 as exec_mark,
+					a.开始执行时间 as exec_begin_time,
+					a.执行终止时间 as exec_end_time,
+					a.上次执行时间 as last_exec_time,
+					a.开嘱科室id as morder_dept_code,
+					(select b.id from 人员表 b where a.开嘱医生 = b.姓名) as morder_doctor_code,
+					a.开嘱时间 as morder_time,
+					a.校对护士 as proofread_nurse,
+					a.校对时间 as proofread_time,
+					(select c.id from 人员表 c where a.停嘱医生 = c.姓名) as stop_doctor_code,
+					a.停嘱时间 as stop_time,
+					a.确认停嘱时间 as confirmed_stop_time,
+					a.确认停嘱护士 as confirmed_stop_nurse,
+					a.审核标记 as check_mark,
+					a.审核状态 as check_status,
+					a.首次用量 as first_use_volumn,
+					a.超量说明 as over_use_volumn,
+					a.组合项目ID as combined_item_code,
+					a.配方ID as fomula_code,
+					a.药师审核标志 as phar_check_mark,
+					a.药师审核时间 as phar_check_time,
+					'' as charge_code
+				from 病人医嘱记录 a
+			    where to_char(a.开嘱时间,'yyyy-MM-dd') = #{curDate}
+			   ) t where rownum <= ${curPageRow}
+			 ) where rn > ${prePageRow}
+			 ]]>
+    </select>
+    <select id="countNum" resultType="int">
+        <![CDATA[
+        select count(*) from 病人医嘱记录
+        ]]>
+    </select>
+    <select id="countNumWithDate" parameterType="String" resultType="int">
+    	<![CDATA[
+        select count(*) from 病人医嘱记录  where to_char(开嘱时间,'yyyy-MM-dd') = #{curDate}
+        ]]>
+    </select>
+</mapper>
